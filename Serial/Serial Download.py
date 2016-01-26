@@ -13,35 +13,45 @@ ser.open()
 
 def robotaa(data):
     """Function to send robot a left motor """
-    if(data!= "exit")
+    if(data!= "exit"):
         ser.write(data + '\n')
-    else
+    else:
         ser.close()
         exit()
+        
 def robotab(data):
     """Function to send robot a right motor"""
-    if(data!= "exit")
+    if(data!= "exit"):
         ser.write(data + '\n')
-    else
+    else:
         ser.close()
         exit()
         
 def robotba(data):
     """Function to send robot b left motor"""
-    if(data!= "exit")
+    if(data!= "exit"):
         ser.write(data + '\n')
-    else
+    else:
         ser.close()
         exit()
         
 def robotbb(data):
     """Function to send robot b right motor """
-    if(data!= "exit")
+    if(data!= "exit"):
         ser.write(data + '\n')
-    else
+    else:
         ser.close()
         exit()
+        #bytes, /r
+"""        
+def readf(asize):
+    #Function to read date
+    ser.read(size = asize)
         
+def readlinef():
+    #Function to read date
+    return ser.readline()
+"""        
 """def _write_cmd(self, cmd):
     #Write a command and wait for response
     if self.debug_print: print ">" + cmd
