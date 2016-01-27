@@ -3,7 +3,7 @@ import time
 
 ser = serial.Serial(
     port='COM4',
-    baudrate=115200,
+    baudrate=11600,
     timeout = 5)
 
 ser.close()
