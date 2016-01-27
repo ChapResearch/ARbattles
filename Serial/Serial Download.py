@@ -4,13 +4,96 @@ import time
 ser = serial.Serial(
     port='COM4',
     baudrate=115200,
-    timeout = 10
-    )
+    timeout = 5)
 
 ser.close()
 ser.open()
 
+print "starting \n"
 
+#Echo On, not necessary
+"""
+ser.write("+\r")
+ser.readline() 
+"""
+#Factory Reset
+print "sf,1 "
+ser.write("sf,1\r")
+print ser.readline()
+
+#Enable private service
+print "ss,00000001 "    
+ser.write("SS,00000001\r")
+print ser.readline()
+
+#Set as peripheral
+print "sr,00000000 "
+ser.write("SR,00000000\r")
+print ser.readline()
+
+#Clean Private Service
+print "PZ "
+ser.write("PZ\r")
+print ser.readline()
+
+
+#Set private service UUID 
+print "ps uuid"
+ser.write("ps,8d3d8a9e2864440eafbcb63f8d076d45")
+
+#Set private characteristic to be readable, notifiable and 4 bytes in length
+print "pc uuid \n"
+ser.write("pc,8d3d8a9e2864440eafbcb63f8d076d45,12,04")
+
+
+#Reboot to apply changed
+print "reboot "
+ser.write("r,1\r")
+print ser.readline()
+
+
+
+#Send data to advertise
+print "data set"
+ser.write("N,3322\r")
+print ser.readline() + "\n"
+
+
+"""Multiple rounds because errors showing up"""
+
+#Advertise 1st Time
+print "Starting Advertise"
+ser.write("A\r")
+print ser.readline()
+
+#End Advertise 1st Time
+print "Ending Advertise"
+ser.write("y\r")
+print ser.readline()
+#print ser.readline()
+
+
+#Start Advertise again
+print "Starting Advertise (2)"
+ser.write("A\r")
+print ser.readline()
+
+#End Advertise again
+print "Ending Advertise (2)"
+ser.write("y\r")
+print ser.readline()
+
+
+#Start Advertise last time
+print "Starting Advertise (3) "
+ser.write("A\r")
+
+print "Advertising"
+print ser.readline()
+
+
+#Possible substring for each value? See how data will be sent to the function/received by robot
+#These functions are meant to be called to send information from the game to the robots
 def robotaa(data):
     """Function to send robot a left motor """
     if(data!= "exit"):
@@ -42,23 +125,3 @@ def robotbb(data):
     else:
         ser.close()
         exit()
-        #bytes, /r
-"""        
-def readf(asize):
-    #Function to read date
-    ser.read(size = asize)
-        
-def readlinef():
-    #Function to read date
-    return ser.readline()
-"""        
-"""def _write_cmd(self, cmd):
-    #Write a command and wait for response
-    if self.debug_print: print ">" + cmd
-        self._write_line(cmd);
-        resp = None
-    while resp == None:
-      resp = self._read_line()
-    if self.debug_print: print "<" + resp
-    return resp
-"""
