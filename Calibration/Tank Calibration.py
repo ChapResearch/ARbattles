@@ -28,7 +28,7 @@ while not gameExit:
                 
     gameDisplay.fill(white)
     pygame.draw.rect(gameDisplay, blue ,[0,0,displaywidth/2,displayheight/2])
-    pygame.draw.rect(gameDisplay, blue ,[displaywidth/2,displayheight/2,displaywidth/2,displayheight/2])
+    pygame.draw.rect(gameDisplay, blue ,[displaywidth/2+60,displayheight/2+60,(displaywidth/2),(displayheight/2)])
     
     """
     pygame.draw.rect(gameDisplay, blue ,[0,0,50,50])
