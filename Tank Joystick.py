@@ -188,7 +188,6 @@ class Player(pygame.sprite.Sprite):
         
         self.image = pygame.Surface([player_sizex, player_sizey])
         self.image.fill(green)
-        self.image.set_colorkey((255,0,0))
         
         self.rect = self.image.get_rect()
         
@@ -281,6 +280,12 @@ gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
 pygame.display.set_caption('Tank Game')          
 
 
+#--Method to print text on screen --not used--
+def message_to_screen(msg, color, xpos, ypos):
+    screen_text = font.render(msg, True, color)
+    gameDisplay.blit(screen_text, [xpos, ypos])
+
+
 # --- Sprite lists
  
 # This is a list of every sprite (player and missiles)
@@ -357,6 +362,7 @@ while not gameExit:
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
+        
 
 
         for event in pygame.event.get():
