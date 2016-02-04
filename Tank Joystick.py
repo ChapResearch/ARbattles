@@ -50,7 +50,7 @@ bullet_sizey = 8
 
 #events to reset color after a hit
 RESETEVENT = pygame.USEREVENT + 1
-RESETEVENT2 = pygame.USEREVENT + 1
+RESETEVENT2 = pygame.USEREVENT + 2
 time = 700
 
 distance1 = 0
@@ -67,8 +67,7 @@ color2 = red
 
 #-----Classes-----
 
-#----Circle Classes---
-
+#----Tank Circle Classes----
 
 class Circle (pygame.sprite.Sprite):
     global x1, y1, distance1, time, RESETEVENT
@@ -90,10 +89,6 @@ class Circle (pygame.sprite.Sprite):
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT, time)
-
-    def hit(self):
-        #Turn to red because player 2 was hit
-        color = blue2
         
 
     
@@ -115,10 +110,6 @@ class Circle2 (pygame.sprite.Sprite):
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
-
-    def hit(self):
-        #Turn to red because player 2 was hit
-        color2 = green
 
 
         
@@ -156,102 +147,6 @@ class Bullet2 (pygame.sprite.Sprite):
         """ Move the bullet. """
         self.rect.x -= bullet_sizex
 
-#----Tank Classes-----
-
-class Player(pygame.sprite.Sprite):
-    """ This class represents the Green Player. """
-    global RESETEVENT, time, player_sizex, player_sizey, rotate1, temp, degrees, num
-
-    def __init__(self):
-        """ Set up the player on creation. """
-        
-        # Call the parent class (Sprite) constructor
-        super(Player,self).__init__()
-        
-        self.image = pygame.Surface([player_sizex, player_sizey])
-        self.image.fill(green)
-        self.image.set_colorkey((255,0,0))
-        
-        self.rect = self.image.get_rect()
-        
-    def update(self):
-        """ Update the player's position. """
-        global tankleftx, tanklefty
-        
-        # Set the player x and y positions to the variables
-        self.rect.x = tankleftx
-        self.rect.y = tanklefty
-        
-    def rotate(self,angle):
-        """
-        r = rotations.get(gameObject,0) + 45
-        rotations[gameObject] = r
-        return pygame.transform.rotate(gameObject, r)
-        """
-        rotate1 = True
-        self.image = pygame.transform.rotate(self.image, angle)
-    def timer(self):
-        pygame.time.set_timer(RESETEVENT, time)
-        
-    def restore (self):
-        if (rotate1 == False ):
-            self.image.fill(green)
-            
-            degrees = 0;
-            num = 0
-            print "Player 1 restore num and degrees", num, degrees
-            
-        else:
-            print "player 1 else"
-            
-    def hit(self):
-        #Turn to red because player 2 was hit
-        self.image = pygame.Surface([player_sizex, player_sizey])
-        self.image.fill(red)
-        
-        
-class Player2(pygame.sprite.Sprite):
-    """ This class represents the Blue Player. """
-    global RESETEVENT, time, player_sizex, player_sizey, rotate2, temp2, degrees2, num2
-
-    def __init__(self):
-        """ Set up the player on creation. """
-        
-        # Call the parent class (Sprite) constructor
-        super(Player2,self).__init__()
-        self.image = pygame.Surface([player_sizex,player_sizey])
-        self.image.fill(blue)
-        self.rect = self.image.get_rect()
-        
-        
-    def update(self):
-        """ Update the player's position. """
-        global tankrightx, tankrighty
-        
-        # Set the player x and y positions to the variables
-        self.rect.x = tankrightx
-        self.rect.y = tankrighty
-        
-    def rotate(self, angle):
-        rotate2 = True
-        self.image = pygame.transform.rotate(self.image, angle)
-
-    def timer(self):
-        pygame.time.set_timer(RESETEVENT, time)
-        
-    def restore (self):
-        if (rotate2 == False ):
-            self.image.fill(blue)
-            
-        else:
-            print "player 2 else"
-        
-    def hit(self):
-        #Turn to red because player 2 was hit
-        self.image.fill(red)
-        degrees2 = 0
-        num2 = 0
-        print "Hit Num 2 and degrees 2", num2, degrees2
 
 #--Method to print text on screen
 def message_to_screen(msg, color, xpos, ypos):
@@ -278,16 +173,15 @@ bullet_list = pygame.sprite.Group()
 bullet2_list = pygame.sprite.Group()
 
 
-# Create a player tanks
-"""
-#Player 1
-player = Player()
-all_sprites_list.add(player)
+# Create the player tanks
 
-#Player 2
-player2 = Player2()
-all_sprites_list.add(player2)
-"""
+#Circle 1
+circle = Circle()
+all_sprites_list.add(circle)
+
+#Circle 2
+circle2 = Circle2()
+all_sprites_list.add(circle2)
 
 # Loop until the game has ended
 gameExit = False
@@ -314,13 +208,7 @@ tankrighty_c = 0
 
 
 
-#Circle 1
-circle = Circle()
-all_sprites_list.add(circle)
 
-#Circle 2
-circle2 = Circle2()
-all_sprites_list.add(circle2)
 
 
 
@@ -428,26 +316,20 @@ while not gameExit:
                 all_sprites_list.add(bullet2)
                 bullet2_list.add(bullet2)
                 
-                
+                        
         #Reset the tanks back to their original color        
         if event.type == RESETEVENT:
                 print "Player 1 Event"
-                #player.restore()
                 color = blue
-                print "Color", color
                 circle.update()
-                print "Update"
                 pygame.time.set_timer(RESETEVENT, 0)
                 
         elif event.type == RESETEVENT2:
                 print "Player 2 Event"
-                #player2.restore()
-                color = red
-                print "Color2", color2
+                color2 = red
                 circle2.update()
-                print "Update 2"
                 pygame.time.set_timer(RESETEVENT2, 0)
-                
+                        
         
 
     # --- Game logic
@@ -508,10 +390,9 @@ while not gameExit:
     # Calculate collisions for bullets from player 1
     for bullet in bullet_list:
         
-        # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank red
+        # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank Blue 2
         if centerRobot2[0] + distance2 > bullet.rect.x > centerRobot2[0] - distance2 and centerRobot2[1] + distance2 > bullet.rect.y > centerRobot2[1] - distance2:
-            
-            circle2.hit()
+            color2 = blue2
             circle2.timer()
             print "Hit red player"
             bullet_list.remove(bullet)
@@ -542,9 +423,9 @@ while not gameExit:
     # Calculate collisions for bullets from player 2
     for bullet2 in bullet2_list:
         
-        # If the player 1 is hit, remove the bullet and add to the player 2 score   
+        # If the player 1 is hit, remove the bullet, add to the player 2 score and turn the player 1 tank Blue 2
         if centerRobot1[0] + distance1 > bullet2.rect.x > centerRobot1[0] - distance1 and centerRobot1[1] + distance1 > bullet2.rect.y > centerRobot1[1] - distance1:
-            circle.hit()
+            color = blue2
             circle.timer()
             print "Hit blue player"
             bullet2_list.remove(bullet2)
