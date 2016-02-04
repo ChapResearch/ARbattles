@@ -4,7 +4,7 @@ import time
 
 pygame.init()
 
-blue = (73, 109, 173)
+red = (255, 0, 0)
 white = (255, 255, 255)
 
 gameExit = False
@@ -27,15 +27,10 @@ while not gameExit:
                 gameExit = True
                 
     gameDisplay.fill(white)
-    pygame.draw.rect(gameDisplay, blue ,[0,0,displaywidth/2,displayheight/2])
-    pygame.draw.rect(gameDisplay, blue ,[displaywidth/2+60,displayheight/2+60,(displaywidth/2),(displayheight/2)])
+    pygame.draw.rect(gameDisplay, red ,[0,0,displaywidth/2,displayheight/2])
+    pygame.draw.rect(gameDisplay, red ,[displaywidth/2+60,displayheight/2+60,(displaywidth/2),(displayheight/2)])
     
-    """
-    pygame.draw.rect(gameDisplay, blue ,[0,0,50,50])
-    pygame.draw.rect(gameDisplay, blue ,[displaywidth - 50, displayheight - 50, 50, 50])
-    pygame.draw.rect(gameDisplay, blue ,[displaywidth - 50,0,50,50])
-    pygame.draw.rect(gameDisplay, blue ,[0,displayheight - 50,50,50])
-    """
+    
     pygame.display.update()
   
     clock.tick(20)
