@@ -1,9 +1,14 @@
 import pygame
 import time
 import math
-#import cv2
-#import numpy as np
-#hello
+import sys
+import Line_Functions
+
+'''
+from robotControl import robotControl
+
+robots = robotControl(3)
+'''
 
 pygame.init()
 
@@ -14,10 +19,12 @@ WHITE = (255, 255, 255)
 black = (0, 0, 0)
 BLACK = (0, 0, 0)
 
-RED = (255, 0, 0)        #hit tank
+#hit tank
 red = (255, 0, 0)
 red2 = (220, 0, 0)
+RED = (255, 0, 0)
 
+#player 2
 BLUE = (73, 109, 173)    #player 2
 blue = (73, 109, 173)
 blue2 = (204, 255, 240)  #background
@@ -40,28 +47,31 @@ player_sizey = 60
 bullet_sizex = 20
 bullet_sizey = 8
 
-circle_radius = 6
 
 #events to reset color after a hit
 RESETEVENT = pygame.USEREVENT + 1
 RESETEVENT2 = pygame.USEREVENT + 1
 time = 700
 
-num = -1
-num2 = -1
+distance1 = 0
+distance2 = 0
+x1 = 0
+x2 = 0
+y1 = 0
+y2 = 0
 
-rotate1 = False
+circle_radius = int(distance1)
 
-
-rotate2 = False
-degrees = 0
-degrees2 = 0
+color = blue
+color2 = red
 
 #-----Classes-----
 
-#----Circle Class---
+#----Circle Classes---
+
+
 class Circle (pygame.sprite.Sprite):
-    global tankrightx, tankrighty, circle_radius
+    global x1, y1, distance1, time, RESETEVENT
     # This class represents the orientation of the tank.
     
     def __init__(self):
@@ -70,17 +80,25 @@ class Circle (pygame.sprite.Sprite):
         self.image = pygame.Surface((10,10))
         self.image.fill(blue2)
         
-        pygame.draw.circle(player.image, white, (player_sizex/2, 10 ), circle_radius, 0)
+        pygame.draw.circle(gameDisplay, color,(x1,y1), int(distance1), 0)
         
         self.rect = self.image.get_rect()
         
     def update(self):
-    #   Function unknown
-        pygame.draw.circle(player.image, white, (player_sizex/2, 10 ), circle_radius, 0)
+        # Update
+        pygame.draw.circle(gameDisplay, color,(x1,y1), int(distance1), 0)
+
+    def timer(self):
+        pygame.time.set_timer(RESETEVENT, time)
+
+    def hit(self):
+        #Turn to red because player 2 was hit
+        color = blue2
+        
 
     
 class Circle2 (pygame.sprite.Sprite):
-    global tankrightx, tankrighty, circle_radius
+    global x2, y2, distance2, time, RESETEVENT2
     # This class represents the orientation of the tank.
     
     def __init__(self):
@@ -88,91 +106,55 @@ class Circle2 (pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,20))
         self.image.fill(blue)
-        pygame.draw.circle(player2.image, white, (player_sizex/2, 10 ), circle_radius, 0)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(distance2), 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
         self.rect = self.image.get_rect()
         
     def update(self):
     #   Function unknown
-        pygame.draw.circle(player2.image, white, (player_sizex/2, 10 ), circle_radius, 0)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(distance2), 0)
+
+    def timer(self):
+        pygame.time.set_timer(RESETEVENT2, time)
+
+    def hit(self):
+        #Turn to red because player 2 was hit
+        color2 = green
 
 
         
 #-----Bullet Classes-----
 class Bullet (pygame.sprite.Sprite):
-    global bullet_sizex, bullet_sizey, num
+    global bullet_sizex, bullet_sizey, color
     """ This class represents the missile for the Green Tank. """
     def __init__(self):
         # Call the parent class (Sprite) constructor
         super(Bullet, self).__init__()
  
         self.image = pygame.Surface([bullet_sizex, bullet_sizey])
-        self.image.fill(green)
+        self.image.fill(color)
  
         self.rect = self.image.get_rect()
  
     def update(self):
         """ Move the bullet. """
-        if num == 0:
-            self.rect.x -= bullet_sizex
-
-        elif num == 1:
-            self.image = pygame.Surface([bullet_sizey, bullet_sizex])
-            self.image.fill(green)
-            
-            self.rect.y -= bullet_sizex
-
-        elif num == 2:
-            self.rect.x += bullet_sizex
-            
-        elif num == 3:
-            
-            self.image = pygame.Surface([bullet_sizey, bullet_sizex])
-            self.image.fill(green)
-            
-            self.rect.y += bullet_sizex
-
-        elif num == -1:
-            print "Fail player 1"
+        self.rect.x += bullet_sizex
             
 class Bullet2 (pygame.sprite.Sprite):
     """ This class represents the missile for the Blue Tank. """
-    global bullet_sizex, bullet_sizey, num2
+    global bullet_sizex, bullet_sizey, color2
     def __init__(self):
         # Call the parent class (Sprite) constructor
         super(Bullet2, self).__init__()
 
  
         self.image = pygame.Surface([bullet_sizex, bullet_sizey])
-        self.image.fill(blue)
+        self.image.fill(color2)
  
         self.rect = self.image.get_rect()
  
     def update(self):
         """ Move the bullet. """
-        print "Bullet num 2", num2
-        
-        if num2 == 0:
-            self.rect.x += bullet_sizex
-
-        elif num2 == 1:
-            self.image = pygame.Surface([bullet_sizey, bullet_sizex])
-            self.image.fill(blue)
-            
-            self.rect.y -= bullet_sizex
-
-        elif num2 == 2:
-            self.rect.x -= bullet_sizex
-            
-        elif num2 == 3:
-            
-            self.image = pygame.Surface([bullet_sizey, bullet_sizex])
-            self.image.fill(blue)
-            
-            self.rect.y += bullet_sizex 
-
-        elif num2 == -1:
-            print "Fail player 2"
-
+        self.rect.x -= bullet_sizex
 
 #----Tank Classes-----
 
@@ -188,6 +170,7 @@ class Player(pygame.sprite.Sprite):
         
         self.image = pygame.Surface([player_sizex, player_sizey])
         self.image.fill(green)
+        self.image.set_colorkey((255,0,0))
         
         self.rect = self.image.get_rect()
         
@@ -270,7 +253,11 @@ class Player2(pygame.sprite.Sprite):
         num2 = 0
         print "Hit Num 2 and degrees 2", num2, degrees2
 
-    
+#--Method to print text on screen
+def message_to_screen(msg, color, xpos, ypos):
+    screen_text = font.render(msg, True, color)
+    gameDisplay.blit(screen_text, [xpos, ypos])
+
 # --- Create the window
  
 # Set the height and width of the display
@@ -278,12 +265,6 @@ displaywidth = 800
 displayheight = 600
 gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
 pygame.display.set_caption('Tank Game')          
-
-
-#--Method to print text on screen --not used--
-def message_to_screen(msg, color, xpos, ypos):
-    screen_text = font.render(msg, True, color)
-    gameDisplay.blit(screen_text, [xpos, ypos])
 
 
 # --- Sprite lists
@@ -298,7 +279,7 @@ bullet2_list = pygame.sprite.Group()
 
 
 # Create a player tanks
-
+"""
 #Player 1
 player = Player()
 all_sprites_list.add(player)
@@ -306,7 +287,7 @@ all_sprites_list.add(player)
 #Player 2
 player2 = Player2()
 all_sprites_list.add(player2)
-
+"""
 
 # Loop until the game has ended
 gameExit = False
@@ -331,10 +312,7 @@ tankrighty = displayheight/2-10
 tankrightx_c = 0
 tankrighty_c = 0
 
-player.rect.y = displayheight-30
 
-hit = False
-hit2 = False
 
 #Circle 1
 circle = Circle()
@@ -359,16 +337,18 @@ while not gameExit:
 
         screen_text = font.render("Blue Score " + str(score2), True, red)
         gameDisplay.blit(screen_text, [displaywidth- 770, displayheight-580])
-
-        # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
-        
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameExit = True
                 gameOver = False
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    gameExit = True
+                    gameOver = False
                 
             if event.type == pygame.JOYBUTTONDOWN:
                 if event.button == 10:
@@ -409,263 +389,131 @@ while not gameExit:
             gameExit = True
          
         elif event.type == pygame.JOYAXISMOTION:
-            if event.axis == 0:
-                if joystick.get_axis(0) > 0.02:
-                    #not used
-                    tankrightx_c += block_size
-
-                elif joystick.get_axis(0) < -0.020:
-                    #not used
-                    tankrightx_c -= block_size
-                    
-                elif joystick.get_axis(0) < 0.020 and joystick.get_axis(0) > -0.020:
-                    #not used
-                    tankrightx_c = 0
-
-                
-            elif event.axis == 1:
-                if joystick.get_axis(1) > 0.020:
-                    #move forward left servo robot 1 
-                    tankrighty_c += block_size
-                    
-                elif joystick.get_axis(1) < -0.020:
-                    #move backward left servo robot 1
-                    tankrighty_c -= block_size
-                    
-                elif joystick.get_axis(1) < 0.020 and joystick.get_axis(1) > -0.020:
-                    #stop left servo robot 1
-                    tankrighty_c = 0
-                  
-
-            if event.axis == 2:
-                if joystick.get_axis(2) > 0.020:
-                    #not used
-                    tankleftx_c += block_size
-                    
-                elif joystick.get_axis(2) < -0.020:
-                    #not used
-                    tankleftx_c -= block_size
-                    
-                elif joystick.get_axis(2) < 0.020 and joystick.get_axis(2) > -0.020:
-                    #not used
-                    tankleftx_c = 0
-                
                
-            elif event.axis == 3:
-                if joystick.get_axis(3) > 0.020:
-                    #forward right servo robot 1
-                    tanklefty_c += block_size
-                    
-                elif joystick.get_axis(3) < -0.020:
-                    #backward right servo robot 1
-                    tanklefty_c -= block_size
-                
-                elif joystick.get_axis(2) < 0.020 and joystick.get_axis(2) > -0.020:
-                    #stop right servo robot 1
-                    tanklefty_c = 0
+            if event.axis == 1 or event.axis == 3:
+                left = joystick.get_axis(1)
+                right = joystick.get_axis(3)
+                if abs(left) < 0.020:
+                    left = 0
+                if abs(right) < 0.020:
+                    right = 0                
+                #robots.setSpeed(0, left * -100, right * -100)
 
-        
+            
         elif event.type == pygame.JOYBUTTONDOWN:
-        
-            if event.button == 4:
-                
-                if hit2 == False:
-                    
-                    player2.rotate(90)
-                
-                    if degrees2 != 270:
-                        degrees2 += 90
-                    
-                    else:
-                        degrees2 = 0
-                else:
-                     print "Left Player has been hit!"
-                     #degrees2 = 90
-                     hit2 = False
-                     
-                print "Player 2: ", degrees2
-                #print "turn"
-                
-            if event.button == 6:
-                if hit2 == False:                    
-                    player2.rotate(-90)
 
-                    if degrees2 != -270:
-                        degrees2 -= 90
-                        
-                    else:
-                        degrees2 = 0
-                else:
-                     print "Left Player has been hit!"
-                     #degrees2 = -90
-                     hit2 = False
-                    
-                print "Player 2: ", degrees2
-                #print "turn other way"
-                    
+            if event.button == 2:
                 
-            if event.button == 5:
-                if hit == False:
-                    player.rotate(90)
-                    
-                    if degrees != 270:
-                        degrees += 90
-                        
-                    else:
-                        degrees = 0
-                else:
-                     print "Right player has been hit!"
-                     player.rotate(90)
-                     degrees += 90
-                     hit = False
-                #print "turn 2"
-                print "Player 1: ", degrees
+                # Fire a bullet if the user hits the Blue 'X' Button
+                bullet = Bullet()
                 
-            if event.button == 7:
-                if hit == False:
-                    player.rotate(-90)
-                    
-                    if degrees != -270:
-                        degrees -= 90
-                        
-                    else:
-                        degrees = 0
-                else:
-                     print "Right Player has been hit!"
-                     degrees += -90
-                     player.rotate(-90)
-                     hit = False
-                #print "turn other way 2"
-                print "Player 1: ", degrees
+                # Set the bullet so it is where the player is
+                bullet.rect.x = centerRobot1[0] + distance1/2
+                bullet.rect.y = centerRobot1[1]
                 
+                # Add the bullet to the lists
+                all_sprites_list.add(bullet)
+                bullet_list.add(bullet)
+            
             if event.button == 0:
                 
-                # Fire a bullet if the user hits the right bumper
+                # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
                 # Set the bullet so it is where the player is
+                bullet2.rect.x = centerRobot2[0] + distance2/2
+                bullet2.rect.y = centerRobot2[1]
                 
-                if  (degrees2 == 0):
-                    bullet2.rect.x = player2.rect.x + 85
-                    bullet2.rect.y = player2.rect.y + 9
-                    num2 = 0
-                    
-                elif (degrees2 == 90 or degrees2 == -270):
-                    bullet2.rect.x = player2.rect.x + 8
-                    bullet2.rect.y = player2.rect.y + 20
-                    num2 = 1
-                    
-                elif (degrees2 == 180 or degrees2 == -180):
-                    bullet2.rect.x = player2.rect.x + 10
-                    bullet2.rect.y = player2.rect.y + 45
-                    num2 = 2
-                    
-                elif (degrees2 == 270 or degrees2 == -90 ):
-                    bullet2.rect.x = player2.rect.x + 45
-                    bullet2.rect.y = player2.rect.y + 80
-                    num2 = 3
-                    
-
-                else:
-                    print "angle is not working player 2"
-
                 
                 # Add the bullet to the lists
                 all_sprites_list.add(bullet2)
                 bullet2_list.add(bullet2)
                 
-            if event.button == 2:
-                print degrees
-                
-                # Fire a bullet if the user hits the Space Bar
-                bullet = Bullet()
-                
-                # Set the bullet so it is where the player's turret is
-                if (degrees == 0):
-                    bullet.rect.x = player.rect.x + 10
-                    bullet.rect.y = player.rect.y + 9
-                    num = 0
-                    
-                elif (degrees == -90 or degrees == 270):
-                    bullet.rect.x = player.rect.x + 50
-                    bullet.rect.y = player.rect.y
-                    num = 1
-
-                elif (degrees == 180 or degrees == -180):
-                    bullet.rect.x = player.rect.x + 50
-                    bullet.rect.y = player.rect.y + 50
-                    num = 2
-
-                elif ( degrees == -270 or degrees == 90 ):
-                    bullet.rect.x = player.rect.x + 10
-                    bullet.rect.y = player.rect.y + 9
-                    num = 3
-
-                else:
-                    print "angle is not woking player 1"
-                    
-                # Add the bullet to the lists
-                all_sprites_list.add(bullet)
-                bullet_list.add(bullet)
                 
         #Reset the tanks back to their original color        
         if event.type == RESETEVENT:
-                #print "Player 1 Hit"
-                player.restore()
+                print "Player 1 Event"
+                #player.restore()
+                color = blue
+                print "Color", color
                 circle.update()
+                print "Update"
                 pygame.time.set_timer(RESETEVENT, 0)
                 
-        if event.type == RESETEVENT2:
-                #print "Player 2 Hit"
-                player2.restore()
-                circle.update()
+        elif event.type == RESETEVENT2:
+                print "Player 2 Event"
+                #player2.restore()
+                color = red
+                print "Color2", color2
+                circle2.update()
+                print "Update 2"
                 pygame.time.set_timer(RESETEVENT2, 0)
                 
-
-
-    
-    #Boundaries of each tank         
-    if tankleftx + tankleftx_c > displaywidth - 40.5 or tankleftx + tankleftx_c < displaywidth-1050:
-        tankleftx_c = 0
-    if tanklefty + tanklefty_c > displayheight - 20 or tanklefty + tanklefty_c < 0:
-        tanklefty_c = 0
-    if tankrightx + tankrightx_c > displaywidth - 40.5 or tankrightx + tankrightx_c < displaywidth-850:
-        tankrightx_c = 0
-    if tankrighty + tankrighty_c > displayheight - 20 or tankrighty + tankrighty_c < displayheight-590:
-        tankrighty_c = 0
         
-    #Take the change and add it to the tank's position
-    tankleftx += tankleftx_c
-    tanklefty += tanklefty_c
-    
-    tankrightx += tankrightx_c
-    tankrighty += tankrighty_c
-    
 
     # --- Game logic
-    
-    #Call CV Method
-    #tuple = given value
-    #tuple[0] = x position
-    #tuple[1] = y position
-    #tuple[2] = x of end
-    #tuple[3] = y of end
 
+    #
+    # The method will be sending a tuple of the following form, where each point is expressed as(x,y) where x and y are between 0 and 1:
+    #
+    #    ([center-point-front-robot-1, center-point-rear-robot-1],
+    #    [center-point-front-robot-2, center-point-rear-robot-2]) 
+    #
+  
+    testData2 = [[(0.25, 0.25), (0.3,0.3)], [(0.7, 0.7), (0.7, 0.8)]]
+    
+    #Made testData below to test out bullets
+    testData = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
+    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+
+    #Split Test Data into two robots
+    robot1 = testData[0]
+    robot2 = testData[1]
+
+    #Find centers
+    centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
+    centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
+
+    x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
+    
+    #Determine the distence between the two given points
+    distance1 = math.sqrt(math.pow((robot1[1][0] - robot1[0][0]),2)+ math.pow((robot1[1][1] - robot1[0][1]),2))
+    distance2 = math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+ math.pow((robot2[1][1] - robot2[0][1]),2))
+    
+    #Determine the degrees the robot is facing from east    
+    rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
+    rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+
+    #print "Rotation 1 ", rotationRobot1
+    #print "Rotation 2 ", rotationRobot2
+    
     #cos(angle)* radius of the circle, sin(angle)*radius of the circle
     #for orientation circle
 
     
+
+    #Boundaries of each tank         
+    if centerRobot1[0] + distance1 > displaywidth - 40.5 or centerRobot1[0] + distance1 < displaywidth-1050:
+        tankleftx_c = 0
+    if centerRobot1[1] + distance1 > displayheight - 20 or centerRobot1[1] + distance1 < 0:
+        tanklefty_c = 0
+    if centerRobot2[0] + distance2 > displaywidth - 40.5 or centerRobot2[0] + distance2 < displaywidth-850:
+        tankrightx_c = 0
+    if centerRobot2[1] + distance2 > displayheight - 20 or centerRobot2[1] + distance2 < displayheight-590:
+        tankrighty_c = 0
+    
     # Call the update() method on all the sprites
     all_sprites_list.update()
-    #circle.update(tankrightx,tankrighty)
+    circle.update()
     
     # Calculate collisions for bullets from player 1
     for bullet in bullet_list:
         
         # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank red
-        if player2.rect.x + 80 > bullet.rect.x > player2.rect.x - 20 and player2.rect.y + 50 > bullet.rect.y > player2.rect.y - 20:
-            player2.hit()
-            hit2 = True
-            player2.timer()
+        if centerRobot2[0] + distance2 > bullet.rect.x > centerRobot2[0] - distance2 and centerRobot2[1] + distance2 > bullet.rect.y > centerRobot2[1] - distance2:
+            
+            circle2.hit()
+            circle2.timer()
+            print "Hit red player"
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
@@ -676,8 +524,8 @@ while not gameExit:
                 score+=1
                 gameOver = True
 
-            # print"Score: ", score, "\n"
-                
+            # print"Score: ", score, "\n"      
+
         # Remove the bullet if it flies up off the screen
         elif bullet.rect.x > displaywidth + 10 or bullet.rect.y > displayheight + 10 or bullet.rect.x < -5 or bullet.rect.y < -5:
             bullet_list.remove(bullet)
@@ -689,15 +537,16 @@ while not gameExit:
                #print ("Tank 1 missed!")
 
             
-          
+                
+  
     # Calculate collisions for bullets from player 2
     for bullet2 in bullet2_list:
         
         # If the player 1 is hit, remove the bullet and add to the player 2 score   
-        if player.rect.x + 20 > bullet2.rect.x > player.rect.x - 20 and player.rect.y + 50 > bullet2.rect.y > player.rect.y - 20:
-            player.hit()
-            hit = True
-            player.timer()
+        if centerRobot1[0] + distance1 > bullet2.rect.x > centerRobot1[0] - distance1 and centerRobot1[1] + distance1 > bullet2.rect.y > centerRobot1[1] - distance1:
+            circle.hit()
+            circle.timer()
+            print "Hit blue player"
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
@@ -720,7 +569,7 @@ while not gameExit:
             #if score2 <= 8.5 and score != -15:
             #    score2 -= 0.1
                 #print ("Tank 2 missed!")
-
+            
     # --- Draw a frame
     
     # Clear the screen
@@ -728,15 +577,12 @@ while not gameExit:
  
     # Draw all the spites
     all_sprites_list.draw(gameDisplay)
-    #circle.draw(gameDisplay)
+    circle.update()
+    circle2.update()
 
-    # Extra Game Elements
-
-    #middle dividing line
-    #pygame.draw.rect(gameDisplay, black, [displaywidth/2,displayheight-600 , 5, displayheight])
 
     #Print scores in the top corners
-    screen_text = font.render("Green Score " + str(score), True, red)
+    screen_text = font.render("Red Score " + str(score), True, red)
     gameDisplay.blit(screen_text, [displaywidth - 150, displayheight-580])
 
     screen_text = font.render("Blue Score " + str(score2), True, red)
@@ -750,6 +596,7 @@ while not gameExit:
 
     
 pygame.quit()
+sys.exit()
 quit()
 
 
