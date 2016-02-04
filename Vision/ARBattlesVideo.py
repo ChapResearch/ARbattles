@@ -3,8 +3,9 @@ import time
 import math
 import cv2
 import pygame
+import calibrate
+screen = pygame.display.set_mode((640, 500))
 
-#screen = pygame.display.set_mode((640, 500))
 # oi0
 # Contains vision related methods, include recognizing the robots, determining orientation
 #
@@ -15,23 +16,36 @@ import pygame
 #                         from East.
 #       calibrate() - assuming there are four blue corners in video frame, calibrate
 #
+blue = (73, 109, 173)
+white = (255, 255, 255)
 
-blueLower = np.array([100,50,50])
-blueUpper = np.array([115,255,255])
+# Set the height and width of the display
+displaywidth = 640
+displayheight = 500
+
+blueLower = np.array([170,50,50])
+blueUpper = np.array([185,255,255])
 cap = cv2.VideoCapture(0);
+
 class ARBattlesVideo:
 
     SQUAREBOT = 1
     TRIANGLEBOT = 2
     PENTABOT = 3
 
+    tempFrame = 0
+
     def __init__(self):
-        self.originX = 0
-        self.originY = 0
-        self.width = 0
-        self.hieght = 0
+        self.originX = 158
+        self.originY = 114
+        self.width = 256
+        self.hieght = 158
 
     def calibrate(self):
+        screen.fill(white)
+        pygame.draw.rect(screen, blue ,[0,0,displaywidth/2,displayheight/2])
+        pygame.draw.rect(screen, blue ,[displaywidth/2+60,displayheight/2+60,(displaywidth/2),(displayheight/2)])
+        pygame.display.update()
         doublecheck = 1
         firstTime = True
         while(doublecheck<=5):
@@ -62,8 +76,9 @@ class ARBattlesVideo:
                 print("err")
                 continue
 
+
     def robotLocation(self, roboID):
-        NUM_OF_BLUE=4
+        NUM_OF_BLUE=2
         NUM_OF_ROBOTS=NUM_OF_BLUE/2
         XB={}
         XS={}
@@ -84,26 +99,42 @@ class ARBattlesVideo:
         while(notFound):
             try:
                 cnts = self.getContours()[0:NUM_OF_BLUE]
+                for i in range(0,len(cnts)):
+                    print(self.determineShape(cnts[i]))
+                    print(self.getCenterX(cnts[i]))
                 print(len(cnts))
                 for i in range(0,len(cnts)):
                     if i < NUM_OF_ROBOTS:
+                        tempXCenter = self.getCenterX(cnts[i])
+                        while(tempXCenter<=0):
+                            cnts =self.getContours()[0:NUM_OF_BLUE]
+                            tempXCenter = self.getCenterX(cnts[i])
                         XB[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YB[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         print "Big stuff"
                     else:
+                        tempXCenter = self.getCenterX(cnts[i])
+                        while(tempXCenter<=0):
+                            cnts =self.getContours()[0:NUM_OF_BLUE]
+                            tempXCenter = self.getCenterX(cnts[i])
                         XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         print "Small Stuff"
                     #print  XB,XS,YB,YS
+                print("hi7")
                 notFound = False
             except:
                 print"err2"
                 continue
+        print(XS,XB)
         if(roboID == 1):
-            print("hi6")
-            return XS["Quadrilateral"], YS["Quadrilateral"], XS["Quadrilateral"] - (XB["Quadrilateral"]-XS["Quadrilateral"]), YS["Quadrilateral"] - (YB["Quadrilateral"]-YS["Quadrilateral"])
+
+            tempXo=XS["Quadrilateral"] - (XB["Quadrilateral"]-XS["Quadrilateral"])
+            tempYo=YS["Quadrilateral"] - (YB["Quadrilateral"]-YS["Quadrilateral"])
+            print(tempXo,tempYo)
+            return self.cvt021(XS["Quadrilateral"], YS["Quadrilateral"]), self.cvt021(XB["Quadrilateral"], YB["Quadrilateral"])
         if(roboID == 2):
-            return XS["Triangle"], YS["Triangle"], XS["Triangle"] - (XB["Triangle"]-XS["Triangle"]), YS["Triangle"] - (YB["Triangle"]-YS["Triangle"])
+            return self.cvt021(XS["Triangle"], YS["Triangle"]), self.cvt021(XB["Triangle"], YB["Triangle"])
         return XB,XS,YB,YS
     def determineShape(self,cnts):
         SHAPES=["0","1","2","Triangle", "Quadrilateral", "5", "6"]
@@ -117,16 +148,17 @@ class ARBattlesVideo:
              cx=int(M['m10']/M['m00'])
         else:
              cx = 0
-        return cx
+        return float(cx)
     def getCenterY(self,cnt):
         M=cv2.moments(cnt)
         if(M['m00']!=0):
             cy=int(M['m01']/M['m00'])
         else:
             cy = 0
-        return cy
+        return float(cy)
     def getContours(self):
         (grabbed, frame) = cap.read()
+        tempFrame = frame
         #cv2.imshow("frame", frame)
         #cv2.waitKey(0)
         #cv2.imshow("hi", frame)
@@ -134,7 +166,7 @@ class ARBattlesVideo:
         print("hi1")
         blue = cv2.inRange(hsv, blueLower, blueUpper)
         print("hi2")
-        blue = cv2.medianBlur(blue, 5) # get rid of salt and pepper
+        blue = cv2.medianBlur(blue, 3) # get rid of salt and pepper
         print("hi3")
         (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,
     	    cv2.CHAIN_APPROX_SIMPLE)
@@ -143,9 +175,8 @@ class ARBattlesVideo:
         #cv2.imshow("Tracking",blue)
         return sorted(cnts,key = cv2.contourArea, reverse = True)
 
-    def cvt021(self, raw):
-        xRaw, yRaw = raw
-        return (xRaw-self.originX)/self.width, (yRaw-self.originY)/self.hieght
+    def cvt021(self, xRaw, yRaw):
+        return float((xRaw-self.originX)/self.width), float((yRaw-self.originY)/self.hieght)
 
     def closeTo(self, value1, value2, range):
         if(math.fabs(value2-value1) <= range):
@@ -154,8 +185,11 @@ class ARBattlesVideo:
 
 #TEST
 object = ARBattlesVideo()
-object.calibrate()
-print(object.originX, object.originY, object.width, object.hieght)
-time.sleep(5)
+#object.calibrate()
+#print(object.originX, object.originY, object.width, object.hieght)
+#time.sleep(10)
+print(object.robotLocation(2))
 print(object.robotLocation(1))
+cv2.imshow("Frame", object.tempFrame)
+cv2.waitKey(0)
 
