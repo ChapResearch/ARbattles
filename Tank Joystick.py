@@ -285,6 +285,7 @@ while not gameExit:
                 right = joystick.get_axis(3)
                 if abs(left) < 0.020:
                     left = 0
+                    
                 if abs(right) < 0.020:
                     right = 0                
                 #robots.setSpeed(0, left * -100, right * -100)
@@ -382,7 +383,7 @@ while not gameExit:
     
 
     #Boundaries of each tank         
-    if centerRobot1[0] + distance1 > displaywidth - 40.5 or centerRobot1[0] + distance1 < displaywidth-1050:
+    if centerRobot1[0] + distance1 > displaywidth - 40.5 or centerRobot1[0] + distance1 < 0:
         tankleftx_c = 0
     if centerRobot1[1] + distance1 > displayheight - 20 or centerRobot1[1] + distance1 < 0:
         tanklefty_c = 0
@@ -463,7 +464,19 @@ while not gameExit:
     
     # Clear the screen
     gameDisplay.fill(black)
- 
+
+    x = 150; y = 70; width = 15; height = 470;
+
+    #Draw Wall
+    wall = pygame.draw.rect(gameDisplay, white, (x, y, width, height), 0)
+    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-x, y, width, height), 0)
+    centerRobot1[0] - distance1
+
+    if (centerRobot1[0] - distance1 < x and centerRobot1[0] - distance1 > x):
+        left = 0;
+    elif (centerRobot2[0] - distance2 < x and centerRobot2[0] - distance2 > x):
+        right = 0;
+    
     # Draw all the spites
     all_sprites_list.draw(gameDisplay)
     circle.update()
@@ -482,8 +495,6 @@ while not gameExit:
     screen_text = font.render("Blue Score " + str(score2), True, red)
     gameDisplay.blit(screen_text, [displaywidth- 770, displayheight-580])
 
-    #Draw Wall
-    #pygame.draw.rect(gameDisplay, white, (120, 70, 20, 500), 0)
     
     #Update the screen
     pygame.display.flip()
