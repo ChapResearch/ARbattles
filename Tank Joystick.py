@@ -44,8 +44,8 @@ block_size = 10;
 player_sizex = 50
 player_sizey = 60
 
-bullet_sizex = 20
-bullet_sizey = 8
+bullet_sizex = 10
+bullet_sizey = 10
 
 
 #events to reset color after a hit
@@ -128,7 +128,8 @@ class Bullet (pygame.sprite.Sprite):
  
     def update(self):
         """ Move the bullet. """
-        self.rect.x += bullet_sizex
+        self.rect.x += bullet_sizex * math.cos(rotationRobot1)
+        self.rect.y += bullet_sizey * math.sin(rotationRobot1)
             
 class Bullet2 (pygame.sprite.Sprite):
     """ This class represents the missile for the Blue Tank. """
@@ -145,7 +146,8 @@ class Bullet2 (pygame.sprite.Sprite):
  
     def update(self):
         """ Move the bullet. """
-        self.rect.x -= bullet_sizex
+        self.rect.x += bullet_sizex * math.cos(rotationRobot2)
+        self.rect.y += bullet_sizey * math.sin(rotationRobot2)
 
 
 #--Method to print text on screen
@@ -296,8 +298,8 @@ while not gameExit:
                 bullet = Bullet()
                 
                 # Set the bullet so it is where the player is
-                bullet.rect.x = centerRobot1[0] + distance1/2
-                bullet.rect.y = centerRobot1[1]
+                bullet.rect.x = centerRobot1[0] + rotatedPoint1[0]
+                bullet.rect.y = centerRobot1[1] + rotatedPoint1[1]
                 
                 # Add the bullet to the lists
                 all_sprites_list.add(bullet)
@@ -308,8 +310,8 @@ while not gameExit:
                 # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
                 # Set the bullet so it is where the player is
-                bullet2.rect.x = centerRobot2[0] + distance2/2
-                bullet2.rect.y = centerRobot2[1]
+                bullet2.rect.x = centerRobot2[0] + rotatedPoint2[0]
+                bullet2.rect.y = centerRobot2[1] + rotatedPoint2[1]
                 
                 
                 # Add the bullet to the lists
@@ -333,7 +335,7 @@ while not gameExit:
         
 
     # --- Game logic
-
+    
     #
     # The method will be sending a tuple of the following form, where each point is expressed as(x,y) where x and y are between 0 and 1:
     #
@@ -341,15 +343,17 @@ while not gameExit:
     #    [center-point-front-robot-2, center-point-rear-robot-2]) 
     #
   
-    testData2 = [[(0.25, 0.25), (0.3,0.3)], [(0.7, 0.7), (0.7, 0.8)]]
     
-    #Made testData below to test out bullets
-    testData = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
-    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+    #Test Data One
+    testData = [[(0.25, 0.25), (0.3,0.3)], [(0.7, 0.7), (0.7, 0.8)]]
 
+    #Made testData below to test out bullets
+    testData2 = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
+    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+    
     #Split Test Data into two robots
-    robot1 = testData[0]
-    robot2 = testData[1]
+    robot1 = testData[0] #[(0.25, 0.25), (0.3,0.3)]
+    robot2 = testData[1] #[(0.7, 0.7), (0.7, 0.8)]
 
     #Find centers
     centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
@@ -358,15 +362,19 @@ while not gameExit:
     x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
     
     #Determine the distence between the two given points
-    distance1 = math.sqrt(math.pow((robot1[1][0] - robot1[0][0]),2)+ math.pow((robot1[1][1] - robot1[0][1]),2))
-    distance2 = math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+ math.pow((robot2[1][1] - robot2[0][1]),2))
+    distance1 = math.sqrt((math.pow((robot1[1][0] - robot1[0][0]),2))+
+                          (math.pow((robot1[1][1] - robot1[0][1]),2)))
+    
+    distance2 = math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+
+                          math.pow((robot2[1][1] - robot2[0][1]),2))
     
     #Determine the degrees the robot is facing from east    
     rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
     rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
 
-    #print "Rotation 1 ", rotationRobot1
-    #print "Rotation 2 ", rotationRobot2
+    rotatedPoint1 = [(math.cos(rotationRobot1) * distance1), (math.sin(rotationRobot1)* distance1)]
+    rotatedPoint2 = [(math.cos(rotationRobot2) * distance2), (math.sin(rotationRobot2)* distance2)]
+    
     
     #cos(angle)* radius of the circle, sin(angle)*radius of the circle
     #for orientation circle
@@ -461,14 +469,22 @@ while not gameExit:
     circle.update()
     circle2.update()
 
-
+    
+    
+    #Draw Orientation Points
+    pygame.draw.circle(gameDisplay, red,(int(rotatedPoint1[0] + centerRobot1[0]), int(rotatedPoint1[1]+ centerRobot1[1])), 10, 0)
+    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint2[0] + centerRobot2[0]), int(rotatedPoint2[1] + centerRobot2[1])), 10, 0)
+    
     #Print scores in the top corners
     screen_text = font.render("Red Score " + str(score), True, red)
     gameDisplay.blit(screen_text, [displaywidth - 150, displayheight-580])
-
+    
     screen_text = font.render("Blue Score " + str(score2), True, red)
     gameDisplay.blit(screen_text, [displaywidth- 770, displayheight-580])
 
+    #Draw Wall
+    #pygame.draw.rect(gameDisplay, white, (120, 70, 20, 500), 0)
+    
     #Update the screen
     pygame.display.flip()
     
