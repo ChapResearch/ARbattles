@@ -31,12 +31,16 @@ RED = (255, 0, 0)
 #player 2
 BLUE = (73, 109, 173)    #player 2
 blue = (73, 109, 173)
-blue2 = (204, 255, 240)  #background
+blue2 = (204, 255, 240)  #extra blue
 
 
 GREEN = (109, 157, 77)   #player 1
 green = (109, 157, 77)
 green2 = (0, 200, 0)
+
+purple = (186,85,211)
+yellow = (255,255,0)
+pink = (255,105,180)
 
 
 #Define Font
