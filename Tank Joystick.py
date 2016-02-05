@@ -76,22 +76,24 @@ class Circle (pygame.sprite.Sprite):
     def __init__(self):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10,10))
+        self.image = pygame.Surface((distance1,distance1))
         self.image.fill(blue2)
         
-        pygame.draw.circle(gameDisplay, color,(x1,y1), int(distance1), 0)
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(distance1), 0)
         
         self.rect = self.image.get_rect()
         
     def update(self):
         # Update
-        pygame.draw.circle(gameDisplay, color,(x1,y1), int(distance1), 0)
+        self.rect.x = x1-distance1
+        self.rect.y = y1-distance1
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(distance1), 0)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT, time)
         
 
-    
+
 class Circle2 (pygame.sprite.Sprite):
     global x2, y2, distance2, time, RESETEVENT2
     # This class represents the orientation of the tank.
@@ -99,13 +101,16 @@ class Circle2 (pygame.sprite.Sprite):
     def __init__(self):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10,20))
+        self.image = pygame.Surface((distance2,distance2))
         self.image.fill(blue)
         pygame.draw.circle(gameDisplay, color2,(x2, y2), int(distance2), 0)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
         self.rect = self.image.get_rect()
         
     def update(self):
-    #   Function unknown
+    #   Update
+        self.rect.x = x2-distance2
+        self.rect.y = y2-distance2
         pygame.draw.circle(gameDisplay, color2,(x2, y2), int(distance2), 0)
 
     def timer(self):
@@ -346,7 +351,7 @@ while not gameExit:
   
     
     #Test Data One
-    testData = [[(0.25, 0.25), (0.3,0.3)], [(0.7, 0.7), (0.7, 0.8)]]
+    testData = [[(0.25, 0.25), (0.3, 0.3)], [(0.7, 0.7), (0.7, 0.8)]]
 
     #Made testData below to test out bullets
     testData2 = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
@@ -421,11 +426,12 @@ while not gameExit:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
                 
-            """Use the code below to penalize tank 1 for missing after shooting"""
-            #  if score <= 8.5 and score2 != -15:
-            #      score -= 0.1
+            #Use the code below to penalize tank 1 for missing after shooting
+            """
+             if score <= 8.5 and score2 != -15:
+                  score -= 0.1
                #print ("Tank 1 missed!")
-
+            """
             
                 
   
@@ -455,45 +461,51 @@ while not gameExit:
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
-            """Use the code below to penalize tank 2 for missing after shooting""" 
-            #if score2 <= 8.5 and score != -15:
-            #    score2 -= 0.1
+            #Use the code below to penalize tank 2 for missing after shooting
+            """
+            if score2 <= 8.5 and score != -15:
+                score2 -= 0.1
                 #print ("Tank 2 missed!")
+            """
             
     # --- Draw a frame
     
     # Clear the screen
     gameDisplay.fill(black)
 
-    x = 150; y = 70; width = 15; height = 470;
+    wallx = 150; wally = 125; wallwidth = 15; wallheight = 350;
+    wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
 
-    #Draw Wall
-    wall = pygame.draw.rect(gameDisplay, white, (x, y, width, height), 0)
-    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-x, y, width, height), 0)
-    centerRobot1[0] - distance1
-
-    if (centerRobot1[0] - distance1 < x and centerRobot1[0] - distance1 > x):
-        left = 0;
-    elif (centerRobot2[0] - distance2 < x and centerRobot2[0] - distance2 > x):
-        right = 0;
+    #Draw Walls
+    wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
+    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
     
+    wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
+    wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
+
+    wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
+
+    """
+    if (centerRobot1[0] - distance1 <= wallx):
+        left = 0;
+    if (centerRobot2[0] - distance2 < wallx):
+        right = 0;
+    """
     # Draw all the spites
     all_sprites_list.draw(gameDisplay)
     circle.update()
     circle2.update()
-
-    
     
     #Draw Orientation Points
-    pygame.draw.circle(gameDisplay, red,(int(rotatedPoint1[0] + centerRobot1[0]), int(rotatedPoint1[1]+ centerRobot1[1])), 10, 0)
+    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint1[0] + centerRobot1[0]), int(rotatedPoint1[1]+ centerRobot1[1])), 10, 0)
     pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint2[0] + centerRobot2[0]), int(rotatedPoint2[1] + centerRobot2[1])), 10, 0)
     
     #Print scores in the top corners
     screen_text = font.render("Red Score " + str(score), True, red)
-    gameDisplay.blit(screen_text, [displaywidth - 150, displayheight-580])
+    gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 580])
     
     screen_text = font.render("Blue Score " + str(score2), True, red)
-    gameDisplay.blit(screen_text, [displaywidth- 770, displayheight-580])
+    gameDisplay.blit(screen_text, [displaywidth - 770, displayheight - 580])
 
     
     #Update the screen
