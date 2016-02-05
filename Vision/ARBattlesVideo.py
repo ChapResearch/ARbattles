@@ -3,7 +3,7 @@ import time
 import math
 import cv2
 import pygame
-import calibrate
+import calibrate as cs
 screen = pygame.display.set_mode((640, 500))
 
 # oi0
@@ -36,49 +36,23 @@ class ARBattlesVideo:
     tempFrame = 0
 
     def __init__(self):
-        self.originX = 158
-        self.originY = 114
-        self.width = 256
-        self.hieght = 158
+        self.originX = 244
+        self.originY = 233
+        self.width = 149
+        self.hieght = 123
 
     def calibrate(self):
-        screen.fill(white)
-        pygame.draw.rect(screen, blue ,[0,0,displaywidth/2,displayheight/2])
-        pygame.draw.rect(screen, blue ,[displaywidth/2+60,displayheight/2+60,(displaywidth/2),(displayheight/2)])
-        pygame.display.update()
-        doublecheck = 1
-        firstTime = True
-        while(doublecheck<=5):
-            try:
-                count = 0
-                cnts = self.getContours()[0:2]
-                x1,y1,w1,h1 = cv2.boundingRect(cnts[0])
-                x2,y2,w2,h2 = cv2.boundingRect(cnts[1])
-                if(firstTime or self.closeTo(x1,self.originX, 200)):
-                    self.originX = x1
-                    count = count +1
-                if(firstTime or self.closeTo(x1,self.originY, 200)):
-                    self.originY = y1
-                    count = count+1
-                if(firstTime or self.closeTo((x2+w2)-x1,self.width, 200)):
-                    self.width = (x2+w2)-x1
-                    count = count +1
-                if(firstTime or self.closeTo((y2+h2)-y1,self.hieght, 200)):
-                    self.hieght = (y2+h2)-y1
-                    count = count +1
-                if(count == 4):
-                    firstTime = False
-                    doublecheck = doublecheck+1
-                else:
-                    firstTime = True
-                    doublecheck = 1
-            except:
-                print("err")
-                continue
+        obj = cs.Calibrate()
+        obj.calibrate()
+        x,y,w,h = obj.getCoordinates()
+        self.originX = x
+        self.originY = y
+        self.width = w
+        self.hieght = h
 
 
     def robotLocation(self, roboID):
-        NUM_OF_BLUE=2
+        NUM_OF_BLUE=4
         NUM_OF_ROBOTS=NUM_OF_BLUE/2
         XB={}
         XS={}
@@ -100,23 +74,24 @@ class ARBattlesVideo:
             try:
                 cnts = self.getContours()[0:NUM_OF_BLUE]
                 for i in range(0,len(cnts)):
-                    print(self.determineShape(cnts[i]))
-                    print(self.getCenterX(cnts[i]))
-                print(len(cnts))
-                for i in range(0,len(cnts)):
                     if i < NUM_OF_ROBOTS:
                         tempXCenter = self.getCenterX(cnts[i])
-                        while(tempXCenter<=0):
+                        tempYCenter = self.getCenterY(cnts[i])
+                        while(tempXCenter<=0 or tempYCenter<=0):
                             cnts =self.getContours()[0:NUM_OF_BLUE]
                             tempXCenter = self.getCenterX(cnts[i])
+                            tempYCenter = self.getCenterY(cnts[i])
+                            print(tempXCenter)
                         XB[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YB[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         print "Big stuff"
                     else:
                         tempXCenter = self.getCenterX(cnts[i])
-                        while(tempXCenter<=0):
+                        while(tempXCenter<=0 or tempYCenter<=0):
                             cnts =self.getContours()[0:NUM_OF_BLUE]
                             tempXCenter = self.getCenterX(cnts[i])
+                            tempYCenter = self.getCenterY(cnts[i])
+                            print(tempXCenter)
                         XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         print "Small Stuff"
@@ -126,21 +101,20 @@ class ARBattlesVideo:
             except:
                 print"err2"
                 continue
-        print(XS,XB)
+        print(XS,YS,XB,YB)
         if(roboID == 1):
-
             tempXo=XS["Quadrilateral"] - (XB["Quadrilateral"]-XS["Quadrilateral"])
             tempYo=YS["Quadrilateral"] - (YB["Quadrilateral"]-YS["Quadrilateral"])
-            print(tempXo,tempYo)
+            #print(tempXo,tempYo)
             return self.cvt021(XS["Quadrilateral"], YS["Quadrilateral"]), self.cvt021(XB["Quadrilateral"], YB["Quadrilateral"])
         if(roboID == 2):
             return self.cvt021(XS["Triangle"], YS["Triangle"]), self.cvt021(XB["Triangle"], YB["Triangle"])
         return XB,XS,YB,YS
     def determineShape(self,cnts):
         SHAPES=["0","1","2","Triangle", "Quadrilateral", "5", "6"]
-        approx = cv2.approxPolyDP(cnts, 0.05*cv2.arcLength(cnts,True),True)
+        approx = cv2.approxPolyDP(cnts, 0.07*cv2.arcLength(cnts,True),True)
         numsides = len(approx)
-        print(numsides)
+        #print(numsides)
         return SHAPES[numsides]
     def getCenterX(self,cnt):
         M=cv2.moments(cnt)
@@ -185,11 +159,13 @@ class ARBattlesVideo:
 
 #TEST
 object = ARBattlesVideo()
-#object.calibrate()
-#print(object.originX, object.originY, object.width, object.hieght)
-#time.sleep(10)
+object.calibrate()
+print(object.originX, object.originY, object.width, object.hieght)
+time.sleep(10)
+#time.sleep(5)
+print(object.robotLocation(1))
 print(object.robotLocation(2))
 print(object.robotLocation(1))
-cv2.imshow("Frame", object.tempFrame)
+#cv2.imshow("Frame", object.tempFrame)
 cv2.waitKey(0)
 
