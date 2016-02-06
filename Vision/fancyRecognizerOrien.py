@@ -8,8 +8,8 @@ import cv2
 #blueUpper = np.array([255, 128, 50], dtype = "uint8")
 
 #HSV bounds
-blueLower = np.array([110,50,50])
-blueUpper = np.array([120,255,255])
+blueLower = np.array([175,50,50])
+blueUpper = np.array([185,255,255])
 SHAPES=["0","1","2","Triangle", "Quadrilateral", "5", "6"]
 robotTfront = 0,0
 robotSfront = 0,0
@@ -38,7 +38,7 @@ def determineShape(cnts):
         approx = cv2.approxPolyDP(cnts, 0.1*cv2.arcLength(cnts,True),True)
         numsides = len(approx)
         return SHAPES[numsides]
-cap = cv2.VideoCapture(0); # get USB webcam input
+cap = cv2.VideoCapture(1); # get USB webcam input
 
 # keep looping
 count = 0

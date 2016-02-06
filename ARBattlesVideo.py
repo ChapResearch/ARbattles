@@ -25,7 +25,7 @@ displayheight = 500
 
 blueLower = np.array([170,50,50])
 blueUpper = np.array([185,255,255])
-cap = cv2.VideoCapture(0);
+cap = cv2.VideoCapture(1);
 
 class ARBattlesVideo:
 
@@ -158,14 +158,14 @@ class ARBattlesVideo:
         return False
 
 #TEST
-object = ARBattlesVideo()
-object.calibrate()
-print(object.originX, object.originY, object.width, object.hieght)
-time.sleep(10)
+#object = ARBattlesVideo()
+#object.calibrate()
+#print(object.originX, object.originY, object.width, object.hieght)
+#time.sleep(10)
 #time.sleep(5)
-print(object.robotLocation(1))
-print(object.robotLocation(2))
-print(object.robotLocation(1))
+#print(object.robotLocation(1))
+#print(object.robotLocation(2))
+#print(object.robotLocation(1))
 #cv2.imshow("Frame", object.tempFrame)
-cv2.waitKey(0)
+#cv2.waitKey(0)
 

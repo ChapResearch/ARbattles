@@ -63,7 +63,7 @@ y2 = 0
 circle_radius = int(distance1)
 
 color = blue
-color2 = red
+color2 = white
 
 #-----Classes-----
 
@@ -473,17 +473,17 @@ while not gameExit:
     # Clear the screen
     gameDisplay.fill(black)
 
-    wallx = 150; wally = 125; wallwidth = 15; wallheight = 350;
-    wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
+    #wallx = 150; wally = 125; wallwidth = 15; wallheight = 350;
+    #wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
 
     #Draw Walls
-    wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
-    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
+    #wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
+    #wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
     
-    wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
-    wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
+    #wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
+    #wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
 
-    wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
+    #wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
 
     """
     if (centerRobot1[0] - distance1 <= wallx):

@@ -10,7 +10,7 @@ numPlayers = 4
 #blueUpper = np.array([255, 128, 50], dtype = "uint8")
 
 #HSV bounds
-blueLower = np.array([160, 50, 50])
+blueLower = np.array([175, 50, 50])
 blueUpper = np.array([185, 255, 255])
 def distance(point1, point2):
     sq1 = (point1[0]-point2[0])*(point1[0]-point2[0])

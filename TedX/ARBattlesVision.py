@@ -95,7 +95,7 @@ class ARBattlesVideo:
                         XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         #print "Small Stuff"
-                    #print  XB,XS,YB,YS
+                    print  XB,XS,YB,YS
                 #print("hi7")
                 notFound = False
             except:
@@ -157,7 +157,7 @@ class ARBattlesVideo:
             return True
         return False
 
-#TEST
+#TEST#
 #object = ARBattlesVideo()
 #object.calibrate()
 #print(object.originX, object.originY, object.width, object.hieght)
@@ -167,5 +167,5 @@ class ARBattlesVideo:
 #print(object.robotLocation(2))
 #print(object.robotLocation(1))
 #cv2.imshow("Frame", object.tempFrame)
-cv2.waitKey(0)
+#cv2.waitKey(0)
 

@@ -28,16 +28,16 @@ class Calibrate:
                 cnts = self.getContours()[0:2]
                 x1,y1,w1,h1 = cv2.boundingRect(cnts[0])
                 x2,y2,w2,h2 = cv2.boundingRect(cnts[1])
-                if(firstTime or self.closeTo(x1,self.originX, 200)):
+                if(firstTime or self.closeTo(x1,self.originX, 600)):
                     self.originX = x1
                     count = count +1
-                if(firstTime or self.closeTo(x1,self.originY, 200)):
+                if(firstTime or self.closeTo(x1,self.originY, 600)):
                     self.originY = y1
                     count = count+1
-                if(firstTime or self.closeTo((x2+w2)-x1,self.width, 200)):
+                if(firstTime or self.closeTo((x2+w2)-x1,self.width, 600)):
                     self.width = (x2+w2)-x1
                     count = count +1
-                if(firstTime or self.closeTo((y2+h2)-y1,self.hieght, 200)):
+                if(firstTime or self.closeTo((y2+h2)-y1,self.hieght,600)):
                     self.hieght = (y2+h2)-y1
                     count = count +1
                 if(count == 4):
@@ -54,7 +54,7 @@ class Calibrate:
 
     def getContours(self):
         (grabbed, frame) = cap.read()
-        tempFrame = frame
+        #tempFrame = frame
         #cv2.imshow("frame", frame)
         #cv2.waitKey(0)
         #cv2.imshow("hi", frame)
