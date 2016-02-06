@@ -17,7 +17,7 @@ def centerOfLine(point1, point2):
 def rotationOfLine(point1, point2):
     x = point2[0] - point1[0]
     y = point1[1] - point2[1]
-    return math.degrees(math.atan2(y,x))
+    return math.degrees(math.atan2(x,y))
 
 
 #
