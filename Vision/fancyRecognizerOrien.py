@@ -38,7 +38,7 @@ def determineShape(cnts):
         approx = cv2.approxPolyDP(cnts, 0.1*cv2.arcLength(cnts,True),True)
         numsides = len(approx)
         return SHAPES[numsides]
-cap = cv2.VideoCapture(1); # get USB webcam input
+cap = cv2.VideoCapture(0); # get USB webcam input
 
 # keep looping
 count = 0

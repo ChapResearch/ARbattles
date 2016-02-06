@@ -60,7 +60,7 @@ class ARBattlesVideo:
         YS={}
         # check to see if any contours were found
         #cv2.imshow("Tracking", frame)
-        #cv2.imshow("Blue", blue)
+        #cv2.imshow("Blue", blue
         XB["Triangle"] = 0
         XS["Triangle"] = 0
         YB["Triangle"] = 0
