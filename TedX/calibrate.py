@@ -10,7 +10,7 @@ import cv2
 #
 redLower = np.array([170,50,50])
 redUpper = np.array([185,255,255])
-cap = cv2.VideoCapture(0);
+cap = cv2.VideoCapture(1);
 
 class Calibrate:
     def __init__(self):

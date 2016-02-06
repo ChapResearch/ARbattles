@@ -3,7 +3,7 @@ import time
 import math
 import cv2
 
-cap = cv2.VideoCapture(0); # get USB webcam input
+cap = cv2.VideoCapture(1); # get USB webcam input
 numPlayers = 4
 # GrayScale bounds
 #blueLower = np.array([100, 67, 0], dtype = "uint8")

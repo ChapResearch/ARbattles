@@ -25,7 +25,7 @@ displayheight = 500
 
 blueLower = np.array([170,50,50])
 blueUpper = np.array([185,255,255])
-cap = cv2.VideoCapture(0);
+cap = cv2.VideoCapture(1);
 
 class ARBattlesVideo:
 
