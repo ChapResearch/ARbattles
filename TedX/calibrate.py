@@ -59,14 +59,14 @@ class Calibrate:
         #cv2.waitKey(0)
         #cv2.imshow("hi", frame)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #HSV color scale captures a wider range of the color "blue"
-        print("hi1")
+        #print("hi1")
         blue = cv2.inRange(hsv, redLower, redUpper)
-        print("hi2")
+
         blue = cv2.medianBlur(blue, 3) # get rid of salt and pepper
-        print("hi3")
+
         (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,
     	    cv2.CHAIN_APPROX_SIMPLE)
-        print("hi4")
+
         #print(cnts)
         #cv2.imshow("Tracking",blue)
         return sorted(cnts,key = cv2.contourArea, reverse = True)

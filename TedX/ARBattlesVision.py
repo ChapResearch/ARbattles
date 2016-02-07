@@ -95,7 +95,7 @@ class ARBattlesVideo:
                         XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
                         YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
                         #print "Small Stuff"
-                    print  XB,XS,YB,YS
+                    #print  XB,XS,YB,YS
                 #print("hi7")
                 notFound = False
             except:
@@ -112,7 +112,7 @@ class ARBattlesVideo:
         return XB,XS,YB,YS
     def determineShape(self,cnts):
         SHAPES=["0","1","2","Triangle", "Quadrilateral", "5", "6"]
-        approx = cv2.approxPolyDP(cnts, 0.07*cv2.arcLength(cnts,True),True)
+        approx = cv2.approxPolyDP(cnts, 0.1*cv2.arcLength(cnts,True),True)
         numsides = len(approx)
         #print(numsides)
         return SHAPES[numsides]
@@ -158,9 +158,10 @@ class ARBattlesVideo:
         return False
 
 #TEST#
-#object = ARBattlesVideo()
-#object.calibrate()
-#print(object.originX, object.originY, object.width, object.hieght)
+time.sleep(5)
+object = ARBattlesVideo()
+object.calibrate()
+print(object.originX, object.originY, object.width, object.hieght)
 #time.sleep(10)
 #time.sleep(5)
 #print(object.robotLocation(1))
