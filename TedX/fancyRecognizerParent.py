@@ -3,15 +3,27 @@ import time
 import math
 import cv2
 
-cap = cv2.VideoCapture(1); # get USB webcam input
+cap = cv2.VideoCapture(0); # get USB webcam input
 numPlayers = 4
+#cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH , 600)
+#cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 800)
+
+#print cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH )
+#print cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT )
+
+#cap.set(3,)
+#cap.set(4,2000 )
+
+#print cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH )
+#print cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT )
+
 # GrayScale bounds
 #blueLower = np.array([100, 67, 0], dtype = "uint8")
 #blueUpper = np.array([255, 128, 50], dtype = "uint8")
 
 #HSV bounds
-blueLower = np.array([175, 50, 50])
-blueUpper = np.array([185, 255, 255])
+blueLower = np.array([160, 50, 50])
+blueUpper = np.array([180, 255, 255])
 def distance(point1, point2):
     sq1 = (point1[0]-point2[0])*(point1[0]-point2[0])
     sq2 = (point1[1]-point2[1])*(point1[1]-point2[1])

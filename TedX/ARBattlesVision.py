@@ -6,6 +6,7 @@ import pygame
 import calibrate as cs
 screen = pygame.display.set_mode((640, 500))
 
+
 # oi0
 # Contains vision related methods, include recognizing the robots, determining orientation
 #
@@ -23,9 +24,9 @@ white = (255, 255, 255)
 displaywidth = 640
 displayheight = 500
 
-blueLower = np.array([170,50,50])
-blueUpper = np.array([185,255,255])
-cap = cv2.VideoCapture(1);
+blueLower = np.array([155,50,50])
+blueUpper = np.array([190,255,255])
+cap = cv2.VideoCapture(0);
 
 class ARBattlesVideo:
 
@@ -136,17 +137,19 @@ class ARBattlesVideo:
         #cv2.imshow("frame", frame)
         #cv2.waitKey(0)
         #cv2.imshow("hi", frame)
+        #frame = cv2.medianBlur(frame,5)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #HSV color scale captures a wider range of the color "blue"
         #print("hi1")
         blue = cv2.inRange(hsv, blueLower, blueUpper)
         #print("hi2")
-        blue = cv2.medianBlur(blue, 3) # get rid of salt and pepper
+
+        blue = cv2.medianBlur(blue, 5) # get rid of salt and pepper
         #print("hi3")
         (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,
     	    cv2.CHAIN_APPROX_SIMPLE)
         #print("hi4")
         #print(cnts)
-        #cv2.imshow("Tracking",blue)
+        cv2.imshow("Tracking",blue)
         return sorted(cnts,key = cv2.contourArea, reverse = True)
 
     def cvt021(self, xRaw, yRaw):
