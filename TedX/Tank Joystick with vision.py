@@ -88,10 +88,8 @@ class Circle (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        # Update
-        #self.rect.x = x1-distance1
-        #self.rect.y = y1-distance1
         pygame.draw.circle(gameDisplay, color,(x1, y1), int(60), 0)
+        #robots.setSpeed(0, 0, 0)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT, time)
@@ -112,10 +110,9 @@ class Circle2 (pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-    #   Update
-        #self.rect.x = x2-distance2
-        #self.rect.y = y2-distance2
         pygame.draw.circle(gameDisplay, color2,(x2, y2), int(60), 0)
+        #robots.setSpeed(1, 0, 0)
+
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
@@ -273,21 +270,17 @@ while not gameExit:
     # Get count of joysticks
     joystick_count = pygame.joystick.get_count()
 
+        #---Joystick Testing
+
+    # Get count of joysticks
+    joystick_count = pygame.joystick.get_count()
+
     # For each joystick:
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
 
-        name = joystick.get_name()
-        axes = joystick.get_numaxes()
-
-        for i in range( axes ):
-            axis = joystick.get_axis( i )
-
-        buttons = joystick.get_numbuttons()
-
-        for i in range( buttons ):
-            button = joystick.get_button( i )
+    joystick2 = pygame.joystick.Joystick(1)
+    joystick2.init()
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
@@ -297,7 +290,7 @@ while not gameExit:
 
         elif event.type == pygame.JOYAXISMOTION:
 
-            if event.axis == 1 or event.axis == 3:
+            if joystick.get_axis == 1 or joystick.get_axis == 3:
                 left = joystick.get_axis(1)
                 right = joystick.get_axis(3)
                 if abs(left) < 0.020:
@@ -307,10 +300,20 @@ while not gameExit:
                     right = 0
                 robots.setSpeed(0, left * -100, right * -100)
 
+            if joystick2.get_axis == 1 or joystick2.get_axis == 3:
+                left2 = joystick2.get_axis(1)
+                right2 = joystick2.get_axis(3)
+                if abs(left2) < 0.020:
+                    left2 = 0
+
+                if abs(right2) < 0.020:
+                    right2 = 0
+                robots.setSpeed(1, left2 * -100, right2 * -100)
+
 
         elif event.type == pygame.JOYBUTTONDOWN:
 
-            if event.button == 2:
+            if joystick.get_button(0):
 
                 # Fire a bullet if the user hits the Blue 'X' Button
                 bullet = Bullet()
@@ -323,7 +326,7 @@ while not gameExit:
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
 
-            if event.button == 0:
+            if joystick2.get_button(0):
 
                 # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
@@ -404,7 +407,7 @@ while not gameExit:
 
     x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
 
-    #Determine the distence between the two given points
+    #Determine the distence between the two given points (Currently hardcoded)
     distance1 = 60
         #math.sqrt((math.pow((robot1[1][0] - robot1[0][0]),2))+
          #                 (math.pow((robot1[1][1] - robot1[0][1]),2)))
@@ -420,18 +423,47 @@ while not gameExit:
     #for orientation circle
 
 
-    #
+    ##
     #Boundaries of each tank
+    ##
+
+    #Left Boundary
+    if centerRobot1[0] + distance1 < 0:
+        right = 0;
+
+    #Right Boundary
+    if centerRobot1[0] + distance1 > displaywidth - 40.5:
+        left = 0;
+        #color = red
+
+    #Top Boundary
+    if centerRobot1[1] + distance1 < 10:
+        left = 0; ###CHANGE THIS###
+
+    #Bottom Boundary
+    if centerRobot1[1] + distance1 > displayheight - 20:
+        right = 0; ###CHANGE THIS###
+
+    ###Robot 2###
+    #Left Boundary
+    if centerRobot2[0] + distance2 < displaywidth-850:
+        right2 = 0
+
+    #Right Boundary
+    if centerRobot2[0] + distance2 > displaywidth - 40.5:
+        left2 = 0
+
+    #Bottom Boundary
+    if centerRobot2[1] + distance2 > displayheight - 20:
+        right = 0 ###CHANGE THIS###
+
+    #Top Boundary
+    if centerRobot2[1] + distance2 < displayheight-590:
+        left = 0 #CHANGE THIS###
     #
-    #Robot one, x then y
-    if centerRobot1[0] + distance1 > displaywidth - 40.5 or centerRobot1[0] + distance1 < 0:
-        tankleftx_c = 0
-    if centerRobot1[1] + distance1 > displayheight - 20 or centerRobot1[1] + distance1 < 0:
-        tanklefty_c = 0
-    if centerRobot2[0] + distance2 > displaywidth - 40.5 or centerRobot2[0] + distance2 < displaywidth-850:
-        tankrightx_c = 0
-    if centerRobot2[1] + distance2 > displayheight - 20 or centerRobot2[1] + distance2 < displayheight-590:
-        tankrighty_c = 0
+    #
+    #
+
 
     # Call the update() method on all the sprites
     all_sprites_list.update()
@@ -443,6 +475,7 @@ while not gameExit:
         # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank Blue 2
         if centerRobot2[0] + distance2 > bullet.rect.x > centerRobot2[0] - distance2 and centerRobot2[1] + distance2 > bullet.rect.y > centerRobot2[1] - distance2:
             color2 = blue
+            #robots.setSpeed(1, -50,  50) #CHANGE THIS
             circle2.timer()
             print "Hit green player"
             bullet_list.remove(bullet)
@@ -477,6 +510,7 @@ while not gameExit:
         # If the player 1 is hit, remove the bullet, add to the player 2 score and turn the player 1 tank Blue 2
         if centerRobot1[0] + distance1 > bullet2.rect.x > centerRobot1[0] - distance1 and centerRobot1[1] + distance1 > bullet2.rect.y > centerRobot1[1] - distance1:
             color = blue
+            #robots.setSpeed(0, -50,  50) #CHANGE THIS
             circle.timer()
             print "Hit blue player"
             bullet2_list.remove(bullet2)
