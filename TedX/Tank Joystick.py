@@ -163,8 +163,8 @@ def message_to_screen(msg, color, xpos, ypos):
 # --- Create the window
  
 # Set the height and width of the display
-displaywidth = 800
-displayheight = 600
+displaywidth = 750
+displayheight = 500
 gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
 pygame.display.set_caption('Tank Game')          
 
@@ -262,20 +262,12 @@ while not gameExit:
     joystick_count = pygame.joystick.get_count()
     
     # For each joystick:
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-    
-        name = joystick.get_name()
-        axes = joystick.get_numaxes()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
 
-        for i in range( axes ):
-            axis = joystick.get_axis( i )
-            
-        buttons = joystick.get_numbuttons()
-        
-        for i in range( buttons ):
-            button = joystick.get_button( i )
+    joystick2 = pygame.joystick.Joystick(1)
+    joystick2.init()
+    
             
     # ----- Event Processing  -----   
     for event in pygame.event.get():
@@ -298,7 +290,7 @@ while not gameExit:
             
         elif event.type == pygame.JOYBUTTONDOWN:
 
-            if event.button == 2:
+            if joystick.get_button(0):
                 
                 # Fire a bullet if the user hits the Blue 'X' Button
                 bullet = Bullet()
@@ -311,7 +303,7 @@ while not gameExit:
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
             
-            if event.button == 0:
+            if joystick2.get_button(0):
                 
                 # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
@@ -356,7 +348,9 @@ while not gameExit:
     #Made testData below to test out bullets
     testData2 = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
     testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
-    
+
+    #testData = [[(Robot 1)(x1, y1), (x2, y2)], [(Robot 2)(x1, y1), (x2, y2)]]
+
     #Split Test Data into two robots
     robot1 = testData[0] #[(0.25, 0.25), (0.3,0.3)]
     robot2 = testData[1] #[(0.7, 0.7), (0.7, 0.8)]
@@ -368,11 +362,8 @@ while not gameExit:
     x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
     
     #Determine the distence between the two given points
-    distance1 = math.sqrt((math.pow((robot1[1][0] - robot1[0][0]),2))+
-                          (math.pow((robot1[1][1] - robot1[0][1]),2)))
-    
-    distance2 = math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+
-                          math.pow((robot2[1][1] - robot2[0][1]),2))
+    distance1 = int(60)
+    distance2 = int(60)
     
     #Determine the degrees the robot is facing from east    
     rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
@@ -473,24 +464,130 @@ while not gameExit:
     # Clear the screen
     gameDisplay.fill(black)
 
-    #wallx = 150; wally = 125; wallwidth = 15; wallheight = 350;
-    #wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
+    wallx = 170; wally = 120; wallwidth = 10; wallheight = 270;
+    wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
+
+    upper = 10; lower = 10; upper2 = upper; lower2 = lower;
 
     #Draw Walls
-    #wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
-    #wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
-    
-    #wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
-    #wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
+    wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
+    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
+
+    wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
+    wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
 
     #wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
 
+
+    #Wall 1
+
+    #Right side of wall 1
+    if centerRobot1[0] - distance1 >= wallx + lower and centerRobot1[0] - distance1 <= wallx + upper:
+        #right = 0;
+        color = blue
+        print "Player 1 near right side wall 1"
+
+    if centerRobot2[0] - distance2 <= wallx + upper and centerRobot2[0] - distance2 >= wallx + lower:
+        #right = 0;
+        color2 = blue
+        print "Player 2 near right side wall 1"
+
+    #Left side wall 1
+    if centerRobot1[0] + distance1 >= wallx - upper and centerRobot1[0] + distance1 <= wallx - lower:
+        #left = 0;
+        color = green
+        print "Player 1 near left side wall 1"
+
+    if centerRobot2[0] + distance2 >= wallx - upper and centerRobot2[0] + distance2 <= wallx - lower:
+        #left = 0;
+        color2 = green
+        print "Player 2 near left side wall 1"
+
+    #Wall 2
+
+    #Right side of wall 2
+    if centerRobot1[0] - distance1 <= displaywidth - wallx + upper2 and centerRobot1[0] - distance1 >= displaywidth - wallx + lower2:
+        #right = 0;
+        print "Player 1 near right side wall 2"
+        color = red
+
+    if centerRobot2[0] - distance2 <= displaywidth - wallx + upper2 and centerRobot2[0] - distance2 >= displaywidth - wallx + lower2:
+        #right = 0;
+        print "Player 2 near right side wall 2"
+        color2 = red
+
+    #Left side of wall 2
+    if centerRobot1[0] + distance1 >= displaywidth - wallx - upper2 and centerRobot1[0] + distance1 <= displaywidth - wallx - lower2:
+        #left = 0;
+        print "Player 1 near left side wall 2"
+        color = blue
+
+    if centerRobot2[0] + distance2 >= displaywidth - wallx - upper2 and centerRobot2[0] + distance2 <= displaywidth - wallx - lower2:
+        #left = 0;
+        print "Player 2 near left side wall 2"
+        color2 = blue
+    
     """
-    if (centerRobot1[0] - distance1 <= wallx):
-        left = 0;
-    if (centerRobot2[0] - distance2 < wallx):
-        right = 0;
-    """
+    ####ORIGINAL######
+    wallx = 150; wally = 100; wallwidth = 10; wallheight = 300;
+    wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
+
+    upper = 10; lower = 5; upper2 = upper; lower2 = lower;
+
+    #Draw Walls
+    wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
+    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
+    
+    wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
+    wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
+
+    wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
+
+    #Wall 1
+
+    #On right side of wall 1
+    if (centerRobot1[0] - distance1 >= wallx + lower and centerRobot1[0] - distance1 <= wallx + upper):
+        #right = 0;
+        color = green
+        print "Player 1 near right side wall 1"
+        
+    if (centerRobot2[0] - distance2 <= wallx + upper and centerRobot2[0] - distance2 >= wallx + lower):
+        #right = 0;
+        color2 = blue
+        print "Player 2 near right side wall 1"
+
+    #left side wall 1
+    if (centerRobot1[0] + distance1 >= wallx - upper and centerRobot1[0] + distance1 <= wallx - lower):
+        #left = 0;
+        color = green
+        print "Player 1 near left side wall 1"
+        
+    if (centerRobot2[0] + distance2 >= wallx - upper and centerRobot2[0] + distance2 <= wallx - lower):
+        #left = 0;
+        color2 = blue
+        print "Player 2 near left side wall 1"
+
+        
+    #Wall 2
+
+    #On right side of wall 2
+    if (centerRobot1[0] - distance1 <= displaywidth - wallx + upper2 and centerRobot1[0] - distance1 >= displaywidth - wallx + lower2):
+        #right = 0;
+        color = green
+        
+    if (centerRobot2[0] - distance2 <= displaywidth - wallx + upper2 and centerRobot2[0] - distance2 >= displaywidth - wallx + lower2):
+        #right = 0;
+        color2 = blue
+        
+    #On left side of wall 1
+    if (centerRobot1[0] + distance1 >= displaywidth - wallx - upper2 and centerRobot1[0] + distance1 <= displaywidth - wallx - lower2):
+        #right = 0;
+        color = green
+        
+    if (centerRobot2[0] + distance2 >= displaywidth - wallx - upper2 and centerRobot2[0] + distance2 <= displaywidth - wallx - lower2):
+        #right = 0;
+        color2 = blue
+    """ 
     # Draw all the spites
     all_sprites_list.draw(gameDisplay)
     circle.update()
@@ -501,11 +598,11 @@ while not gameExit:
     pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint2[0] + centerRobot2[0]), int(rotatedPoint2[1] + centerRobot2[1])), 10, 0)
     
     #Print scores in the top corners
-    screen_text = font.render("Red Score " + str(score), True, red)
-    gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 580])
+    screen_text = font.render("Triangle Score " + str(score), True, red)
+    gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
     
-    screen_text = font.render("Blue Score " + str(score2), True, red)
-    gameDisplay.blit(screen_text, [displaywidth - 770, displayheight - 580])
+    screen_text = font.render("Square Score " + str(score2), True, red)
+    gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 480])
 
     
     #Update the screen
