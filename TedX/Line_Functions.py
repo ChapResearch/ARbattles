@@ -15,7 +15,7 @@ def centerOfLine(point1, point2):
 #                   and finds the degrees distence from east
 #
 def rotationOfLine(point1, point2):
-    x = point2[0] - point1[0]
+    x = point1[0] - point2[0]
     y = point1[1] - point2[1]
     return math.atan2(y,x)
 
