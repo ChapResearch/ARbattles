@@ -11,11 +11,10 @@ vision = ar.ARBattlesVideo()
 vision.calibrate()
 print("calibration done")
 
-
+"""
 from robotControl import robotControl
-
 robots = robotControl('COM4')
-
+"""
 pygame.init()
 
 # Define Colors
@@ -68,6 +67,8 @@ y2 = 0
 
 color = white
 color2 = white
+
+auto = False
 
 #-----Classes-----
 
@@ -279,8 +280,8 @@ while not gameExit:
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
 
-    joystick2 = pygame.joystick.Joystick(1)
-    joystick2.init()
+    #joystick2 = pygame.joystick.Joystick(1)
+    #joystick2.init()
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
@@ -288,18 +289,23 @@ while not gameExit:
         if event.type == pygame.QUIT:
             gameExit = True
 
-        elif event.type == pygame.JOYAXISMOTION:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                gameExit = True
+
+        elif event.type == pygame.JOYAXISMOTION and auto == False:
 
             if joystick.get_axis == 1 or joystick.get_axis == 3:
                 left = joystick.get_axis(1)
                 right = joystick.get_axis(3)
+
                 if abs(left) < 0.020:
                     left = 0
 
                 if abs(right) < 0.020:
                     right = 0
-                robots.setSpeed(0, left * -100, right * -100)
-
+                #robots.setSpeed(0, left * -100, right * -100)
+            """
             if joystick2.get_axis == 1 or joystick2.get_axis == 3:
                 left2 = joystick2.get_axis(1)
                 right2 = joystick2.get_axis(3)
@@ -308,10 +314,10 @@ while not gameExit:
 
                 if abs(right2) < 0.020:
                     right2 = 0
-                robots.setSpeed(1, left2 * -100, right2 * -100)
+                #robots.setSpeed(1, left2 * -100, right2 * -100)
+            """
 
-
-        elif event.type == pygame.JOYBUTTONDOWN:
+        elif event.type == pygame.JOYBUTTONDOWN and auto == False:
 
             if joystick.get_button(0):
 
@@ -326,7 +332,7 @@ while not gameExit:
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
 
-            if joystick2.get_button(0):
+            if joystick.get_button(0) and auto == False:
 
                 # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
@@ -416,8 +422,8 @@ while not gameExit:
         #math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+
         #                 math.pow((robot2[1][1] - robot2[0][1]),2))
 
-    rotatedPoint1 = [(math.cos(rotationRobot1) * distance1), (math.sin(rotationRobot1)* distance1)]
-    rotatedPoint2 = [(math.cos(rotationRobot2) * distance2), (math.sin(rotationRobot2)* distance2)]
+    rotatedPoint1 = [(math.cos(rotationRobot1) * distance1), (math.sin(rotationRobot1) * distance1)]
+    rotatedPoint2 = [(math.cos(rotationRobot2) * distance2), (math.sin(rotationRobot2) * distance2)]
 
     #cos(angle)* radius of the circle, sin(angle)*radius of the circle
     #for orientation circle
@@ -428,21 +434,25 @@ while not gameExit:
     ##
 
     #Left Boundary
-    if centerRobot1[0] + distance1 < 0:
-        right = 0;
-
+    if centerRobot1[0] - distance1 < 20:
+        auto = True
+        print "Robot 1 Left"
+        #Line_Functions.bounce(0)
+        auto = False
     #Right Boundary
     if centerRobot1[0] + distance1 > displaywidth - 40.5:
-        left = 0;
-        #color = red
+        left = 0
+        #color = green
 
     #Top Boundary
     if centerRobot1[1] + distance1 < 10:
-        left = 0; ###CHANGE THIS###
+        left = 0 ###CHANGE THIS###
+        #color = blue
 
     #Bottom Boundary
     if centerRobot1[1] + distance1 > displayheight - 20:
-        right = 0; ###CHANGE THIS###
+        right = 0 ###CHANGE THIS###
+        #color = green2
 
     ###Robot 2###
     #Left Boundary
@@ -614,10 +624,10 @@ while not gameExit:
     pygame.draw.circle(gameDisplay, blue2,( int(rotatedPoint2[0] + centerRobot2[0] + 2),  int(rotatedPoint2[1] + centerRobot2[1] + 2 )), 10, 0)
     
     #Draw scores in the top corners
-    screen_text = font.render("Triangle Score " + str(score), True, red)
+    screen_text = font.render("Square Score " + str(score), True, red)
     gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
 
-    screen_text = font.render("Square Score " + str(score2), True, red)
+    screen_text = font.render("Triangle Score " + str(score2), True, red)
     gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 480])
 
     

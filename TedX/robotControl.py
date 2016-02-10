@@ -75,7 +75,7 @@ class robotControl:
             self.settings[robot].right = int(right)
             self.transmit()
             return True
-        returnFalse
+        return False
 
     #
     # mapForTransmission() - given a particular servo setting, return a
