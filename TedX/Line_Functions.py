@@ -1,9 +1,6 @@
 import math
 import time
 
-from robotControl import robotControl
-robots = robotControl('COM4')
-
 #
 # centerOfLine() - This routine returns a point (consisting of (x,y))
 #                   that is at the center of the two given points.
@@ -51,16 +48,3 @@ def convertVisionDataToScreenCoords(data, width, height):
              convertToScreenCoords(robot1pt2, width, height)],
             [convertToScreenCoords(robot2pt1,width, height),
              convertToScreenCoords(robot2pt2, width, height)]]
-             
-
-#
-# bounce() - Bounce the robot off the wall
-#
-def bounce(robot):
-    print "Hello"
-    robots.setSpeed(0, 0, 0)
-    robots.setSpeed(robot, -100, -100)
-    time.sleep(1)
-    robots.setSpeed(robot, 100, -100)
-    time.sleep(1)
-    robots.setSpeed(robot, 0, 0)

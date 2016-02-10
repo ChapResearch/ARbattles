@@ -3,6 +3,7 @@ import time
 import math
 import sys
 import Line_Functions
+import Movement
 import ARBattlesVision as ar
 
 #Feb 9 - State of working with robots, vision and game
@@ -67,8 +68,6 @@ y2 = 0
 
 color = white
 color2 = white
-
-auto = False
 
 #-----Classes-----
 
@@ -293,7 +292,7 @@ while not gameExit:
             if event.key == pygame.K_q:
                 gameExit = True
 
-        elif event.type == pygame.JOYAXISMOTION and auto == False:
+        elif event.type == pygame.JOYAXISMOTION:
 
             if joystick.get_axis == 1 or joystick.get_axis == 3:
                 left = joystick.get_axis(1)
@@ -317,7 +316,7 @@ while not gameExit:
                 #robots.setSpeed(1, left2 * -100, right2 * -100)
             """
 
-        elif event.type == pygame.JOYBUTTONDOWN and auto == False:
+        elif event.type == pygame.JOYBUTTONDOWN:
 
             if joystick.get_button(0):
 
@@ -332,7 +331,7 @@ while not gameExit:
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
 
-            if joystick.get_button(0) and auto == False:
+            if joystick.get_button(0):
 
                 # Fire a bullet if the user hits the Red 'B' Button
                 bullet2 = Bullet2()
@@ -435,10 +434,10 @@ while not gameExit:
 
     #Left Boundary
     if centerRobot1[0] - distance1 < 20:
-        auto = True
-        print "Robot 1 Left"
-        #Line_Functions.bounce(0)
-        auto = False
+        print "Robot 1 Left Wall"
+        Movement.startBounce(0)
+
+
     #Right Boundary
     if centerRobot1[0] + distance1 > displaywidth - 40.5:
         left = 0

@@ -3,6 +3,7 @@ import time
 import math
 import sys
 import Line_Functions
+import Movement
 
 '''
 from robotControl import robotControl
@@ -213,7 +214,7 @@ tankrighty = displayheight/2-10
 tankrightx_c = 0
 tankrighty_c = 0
 
-
+hello = True
 
 
 
@@ -378,16 +379,55 @@ while not gameExit:
 
     
 
-    #Boundaries of each tank         
-    if centerRobot1[0] + distance1 > displaywidth - 40.5 or centerRobot1[0] + distance1 < 0:
-        tankleftx_c = 0
-    if centerRobot1[1] + distance1 > displayheight - 20 or centerRobot1[1] + distance1 < 0:
-        tanklefty_c = 0
-    if centerRobot2[0] + distance2 > displaywidth - 40.5 or centerRobot2[0] + distance2 < displaywidth-850:
-        tankrightx_c = 0
-    if centerRobot2[1] + distance2 > displayheight - 20 or centerRobot2[1] + distance2 < displayheight-590:
-        tankrighty_c = 0
+    ##
+    #Boundaries of each tank
+    ##
+
+    #Left Boundary
+    #if centerRobot1[0] - distance1 < 100:
+    #    print "Robot 1 Left Wall"
     
+    if hello == True:
+        Movement.startBounce(1)
+        hello = False
+        
+    Movement.doAuto()  
+    
+    #Right Boundary
+    if centerRobot1[0] + distance1 > displaywidth - 40.5:
+        left = 0
+        #color = green
+
+    #Top Boundary
+    if centerRobot1[1] + distance1 < 10:
+        left = 0 ###CHANGE THIS###
+        #color = blue
+
+    #Bottom Boundary
+    if centerRobot1[1] + distance1 > displayheight - 20:
+        right = 0 ###CHANGE THIS###
+        #color = green2
+
+    ###Robot 2###
+    #Left Boundary
+    if centerRobot2[0] + distance2 < displaywidth-850:
+        right2 = 0
+
+    #Right Boundary
+    if centerRobot2[0] + distance2 > displaywidth - 40.5:
+        left2 = 0
+
+    #Bottom Boundary
+    if centerRobot2[1] + distance2 > displayheight - 20:
+        right = 0 ###CHANGE THIS###
+
+    #Top Boundary
+    if centerRobot2[1] + distance2 < displayheight-590:
+        left = 0 #CHANGE THIS###
+    #
+    #
+    #
+
     # Call the update() method on all the sprites
     all_sprites_list.update()
     circle.update()
