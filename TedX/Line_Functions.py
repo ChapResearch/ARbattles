@@ -13,12 +13,12 @@ def centerOfLine(point1, point2):
 
 #
 # rotationOfLine() - This routine takes two points (consisting of (x,y))                       
-#                   and finds the degrees distence from east
+#                   and finds the radians distance from east
 #
 def rotationOfLine(point1, point2):
     x = point1[0] - point2[0]
     y = point1[1] - point2[1]
-    return math.atan2(y,x)
+    return -1 * math.atan2(y,x)
 
 
 #

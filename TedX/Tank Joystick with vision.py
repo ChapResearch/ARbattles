@@ -4,9 +4,28 @@ import math
 import sys
 import Line_Functions
 import Movement
-import ARBattlesVision as ar
+import datetime
 
 #Feb 9 - State of working with robots, vision and game
+"""
+displaywidth = 750
+displayheight = 500
+gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
+pygame.display.set_caption('Tank Game')
+red3 = (202, 26, 26)
+
+print "Draw"
+gameDisplay.fill((255, 255, 255))
+pygame.draw.rect(gameDisplay, red3, [0, 0, displaywidth/4, displayheight/4])
+pygame.draw.rect(gameDisplay, red3,[displaywidth - 100, displayheight - 100, (displaywidth/4), (displayheight/4)])
+pygame.display.update()
+
+print "Set Target"
+target = datetime.datetime.now() + datetime.timedelta(seconds=45)
+while(datetime.datetime.now() < target):
+    continue
+"""
+import ARBattlesVision as ar
 
 vision = ar.ARBattlesVideo()
 vision.calibrate()
@@ -16,6 +35,7 @@ print("calibration done")
 from robotControl import robotControl
 robots = robotControl('COM4')
 """
+
 pygame.init()
 
 # Define Colors
@@ -95,7 +115,6 @@ class Circle (pygame.sprite.Sprite):
         pygame.time.set_timer(RESETEVENT, time)
 
 
-
 class Circle2 (pygame.sprite.Sprite):
     global x2, y2, distance2, time, RESETEVENT2
     # This class represents the orientation of the BLUE tank.
@@ -134,8 +153,8 @@ class Bullet (pygame.sprite.Sprite):
 
     def update(self):
         """ Move the bullet. """
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot1)) * 5
         self.rect.x += (bullet_sizex * math.cos(rotationRobot1)) * 5
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot1)) * -5
 
 class Bullet2 (pygame.sprite.Sprite):
     """ This class represents the missile for the Small Tank """
@@ -152,9 +171,8 @@ class Bullet2 (pygame.sprite.Sprite):
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))*5
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))*5
-
+        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 5
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -5
 
 #--Method to draw text on screen
 def message_to_screen(msg, color, xpos, ypos):
@@ -228,20 +246,34 @@ flickrHeightTolerence = flickerTolerence * displayheight
 lastRotationRobot1 = None
 lastRotationRobot2 = None
 
+# Get count of joysticks
+joystick_count = pygame.joystick.get_count()
+
+# For each joystick:
+joystick = pygame.joystick.Joystick(0)
+joystick.init()
+
+if joystick_count > 1:
+    joystick2 = pygame.joystick.Joystick(1)
+    joystick2.init()
+
 
 # -------- Main Program Loop -----------
+firstTime = False
 while not gameExit:
+    #print "hello"
 
     # ----- Game Over -----
     while gameOver == True:
+        Movement.reset()
         gameDisplay.fill(black)
         message_to_screen("Game over, press Start to play again or Q to quit", red, displaywidth/2 - 200, displayheight/2)
 
-        screen_text = font.render("Green Score " + str(score), True, blue)
-        gameDisplay.blit(screen_text, [displaywidth - 150, displayheight-580])
+        screen_text = font.render("Triangle Score " + str(score), True, blue2)
+        gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
 
-        screen_text = font.render("Blue Score " + str(score2), True, blue)
-        gameDisplay.blit(screen_text, [displaywidth- 770, displayheight-580])
+        screen_text = font.render("Square Score " + str(score2), True, blue2)
+        gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 480])
         pygame.display.flip()
 
 
@@ -265,22 +297,6 @@ while not gameExit:
                     score2 = 0
                     gameOver = False
 
-    #---Joystick Testing
-
-    # Get count of joysticks
-    joystick_count = pygame.joystick.get_count()
-
-        #---Joystick Testing
-
-    # Get count of joysticks
-    joystick_count = pygame.joystick.get_count()
-
-    # For each joystick:
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()
-
-    #joystick2 = pygame.joystick.Joystick(1)
-    #joystick2.init()
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
@@ -292,20 +308,19 @@ while not gameExit:
             if event.key == pygame.K_q:
                 gameExit = True
 
-        elif event.type == pygame.JOYAXISMOTION:
+        if event.type == pygame.JOYAXISMOTION:
+            left = joystick.get_axis(1)
+            right = joystick.get_axis(3)
 
-            if joystick.get_axis == 1 or joystick.get_axis == 3:
-                left = joystick.get_axis(1)
-                right = joystick.get_axis(3)
+            if abs(left) < 0.020:
+                left = 0
 
-                if abs(left) < 0.020:
-                    left = 0
+            if abs(right) < 0.020:
+                right = 0
+            Movement.doTele(0, left, right)
+            #robots.setSpeed(0, left * -100, right * -100)
 
-                if abs(right) < 0.020:
-                    right = 0
-                #robots.setSpeed(0, left * -100, right * -100)
-            """
-            if joystick2.get_axis == 1 or joystick2.get_axis == 3:
+            if joystick_count > 1:
                 left2 = joystick2.get_axis(1)
                 right2 = joystick2.get_axis(3)
                 if abs(left2) < 0.020:
@@ -313,12 +328,12 @@ while not gameExit:
 
                 if abs(right2) < 0.020:
                     right2 = 0
+                Movement.doTele(1, left2, right2)
                 #robots.setSpeed(1, left2 * -100, right2 * -100)
-            """
 
-        elif event.type == pygame.JOYBUTTONDOWN:
+        if event.type == pygame.JOYBUTTONDOWN:
 
-            if joystick.get_button(0):
+            if joystick.get_button(6) or joystick.get_button(7):
 
                 # Fire a bullet if the user hits the Blue 'X' Button
                 bullet = Bullet()
@@ -331,18 +346,19 @@ while not gameExit:
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
 
-            if joystick.get_button(0):
+            if joystick_count > 1:
+                if joystick2.get_button(6) or joystick2.get_button(7):
 
-                # Fire a bullet if the user hits the Red 'B' Button
-                bullet2 = Bullet2()
-                # Set the bullet so it is where the player is
-                bullet2.rect.x = centerRobot2[0] + rotatedPoint2[0]
-                bullet2.rect.y = centerRobot2[1] + rotatedPoint2[1]
+                    # Fire a bullet if the user hits the Red 'B' Button
+                    bullet2 = Bullet2()
 
+                    # Set the bullet so it is where the player is
+                    bullet2.rect.x = centerRobot2[0] + rotatedPoint2[0]
+                    bullet2.rect.y = centerRobot2[1] + rotatedPoint2[1]
 
-                # Add the bullet to the lists
-                all_sprites_list.add(bullet2)
-                bullet2_list.add(bullet2)
+                    # Add the bullet to the lists
+                    all_sprites_list.add(bullet2)
+                    bullet2_list.add(bullet2)
 
 
         #Reset the tanks back to their original color
@@ -371,39 +387,55 @@ while not gameExit:
     #Test Data One
     ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
     ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
-    while(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
-       ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
-    while(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
-        ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
 
+    if lastPosRobot1 == None or lastRotationRobot2==None or lastPosRobot2==None or lastRotationRobot1==None:
+        while xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 or x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1:
+            ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
+            ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
 
-    testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
+    baddata = False
 
-    #Made testData below to test out bullets
-    #testData2 = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
-    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+    if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
+        baddata = True
+    if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
+        baddata = True
 
-    #Split Test Data into two robots
-    robot1 = testData[0]
-    robot2 = testData[1]
+    #if baddata:
+    #    continue
+    if baddata:
+        centerRobot1 = lastPosRobot1
+        rotationRobot1 = lastRotationRobot1
+        centerRobot2 = lastPosRobot2
+        rotationRobot2 = lastRotationRobot2
 
-    #Find centers
-    centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
-    centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
+    else:
+        testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
 
-    #Determine the degrees the robot is facing from east
-    rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
-    rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+        #Made testData below to test out bullets
+        #testData2 = [[(0.5, 0.7), (0.5,0.8)], [(0.7, 0.7), (0.7, 0.8)]]
+        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
 
-    if lastPosRobot1 is not None:
-        if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
-            centerRobot1 = lastPosRobot1
-            rotationRobot1 = lastRotationRobot1
+        #Split Test Data into two robots
+        robot2 = testData[0]
+        robot1 = testData[1]
 
-    if lastPosRobot2 is not None:
-        if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
-            centerRobot2 = lastPosRobot2
-            rotationRobot2 = lastRotationRobot2
+        #Find centers
+        centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
+        centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
+
+        #Determine the degrees the robot is facing from east
+        rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
+        rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+
+        if lastPosRobot1 is not None:
+            if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
+                centerRobot1 = lastPosRobot1
+                rotationRobot1 = lastRotationRobot1
+
+        if lastPosRobot2 is not None:
+            if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
+                centerRobot2 = lastPosRobot2
+                rotationRobot2 = lastRotationRobot2
 
     lastPosRobot1 = centerRobot1
     lastPosRobot2 = centerRobot2
@@ -414,64 +446,97 @@ while not gameExit:
 
     #Determine the distence between the two given points (Currently hardcoded)
     distance1 = 60
-        #math.sqrt((math.pow((robot1[1][0] - robot1[0][0]),2))+
-         #                 (math.pow((robot1[1][1] - robot1[0][1]),2)))
 
     distance2 = 60
-        #math.sqrt(math.pow((robot2[1][0] - robot2[0][0]),2)+
-        #                 math.pow((robot2[1][1] - robot2[0][1]),2))
 
-    rotatedPoint1 = [(math.cos(rotationRobot1) * distance1), (math.sin(rotationRobot1) * distance1)]
-    rotatedPoint2 = [(math.cos(rotationRobot2) * distance2), (math.sin(rotationRobot2) * distance2)]
+    rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
+    rotatedPoint2 = [(math.cos(-1 * rotationRobot2) * distance2), (math.sin(-1 * rotationRobot2) * distance2)]
 
-    #cos(angle)* radius of the circle, sin(angle)*radius of the circle
-    #for orientation circle
+    Movement.doAuto()
 
+    #Collision?
+    """
+     if centerRobot1[0] + distance1 > centerRobot2[0] - distance1 - 10:
+         Movement.startBounce(0, 'b')
+     elif centerRobot1[0] + distance1 > centerRobot2[0] - distance1 - 10:
+    """
 
     ##
-    #Boundaries of each tank
+    #Boundaries of each tank - Uses the Movement Class to bounce
     ##
 
     #Left Boundary
-    if centerRobot1[0] - distance1 < 20:
-        print "Robot 1 Left Wall"
-        Movement.startBounce(0)
-
+    if centerRobot1[0] - distance1 < 30:
+        #print "Robot 1 Left Wall"
+        if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
+            Movement.startBounce(0, 'f')
+        else:
+            Movement.startBounce(0, 'b')
 
     #Right Boundary
-    if centerRobot1[0] + distance1 > displaywidth - 40.5:
-        left = 0
-        #color = green
-
-    #Top Boundary
-    if centerRobot1[1] + distance1 < 10:
-        left = 0 ###CHANGE THIS###
-        #color = blue
+    if centerRobot1[0] + distance1 > displaywidth - 30:
+        #print "Robot 1 Right Wall"
+        if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
+            Movement.startBounce(0, 'b')
+        else:
+            Movement.startBounce(0, 'f')
 
     #Bottom Boundary
-    if centerRobot1[1] + distance1 > displayheight - 20:
-        right = 0 ###CHANGE THIS###
-        #color = green2
+    if centerRobot1[1] + distance1 > displayheight - 30:
+        print "Robot 1 Bottom Wall", rotationRobot1
+        if rotationRobot1 > 0:
+            #print "if 1"
+            Movement.startBounce(0, 'f', 2)
+        else:
+            #print "else 1"
+            Movement.startBounce(0, 'b', 2)
+
+    #Top Boundary
+    if centerRobot1[1] - distance1 < 30:
+        #print "Robot 1 Top Wall"
+
+        if rotationRobot1 > 0:
+            Movement.startBounce(0, 'b', 0.5)
+        else:
+            Movement.startBounce(0, 'f', 0.5)
 
     ###Robot 2###
+
     #Left Boundary
-    if centerRobot2[0] + distance2 < displaywidth-850:
-        right2 = 0
+    if centerRobot2[0] - distance2 < 30:
+        #print "Robot 2 Left Wall"
+        if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
+            Movement.startBounce(1, 'f')
+        else:
+            Movement.startBounce(1, 'b')
 
     #Right Boundary
-    if centerRobot2[0] + distance2 > displaywidth - 40.5:
-        left2 = 0
+    if centerRobot2[0] + distance2 > displaywidth - 30:
+        #print "Robot 2 Right Wall"
+        if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
+            Movement.startBounce(1, 'b')
+        else:
+            Movement.startBounce(1, 'f')
 
     #Bottom Boundary
-    if centerRobot2[1] + distance2 > displayheight - 20:
-        right = 0 ###CHANGE THIS###
+    if centerRobot2[1] + distance2 > displayheight - 30:
+        print "Robot 2 Bottom Wall", rotationRobot2
+        if rotationRobot2 > 0:
+            print ("if 2")
+            Movement.startBounce(1, 'f', 2)
+
+        else:
+            print "else 2"
+            Movement.startBounce(1, 'b', 2)
 
     #Top Boundary
-    if centerRobot2[1] + distance2 < displayheight-590:
-        left = 0 #CHANGE THIS###
-    #
-    #
-    #
+    if centerRobot2[1] - distance2 < 30:
+        if rotationRobot2 > 0:
+            Movement.startBounce(1, 'b', 0.5)
+        else:
+            Movement.startBounce(1, 'f', 0.5)
+
+
 
 
     # Call the update() method on all the sprites
@@ -486,7 +551,7 @@ while not gameExit:
             color2 = blue
             #robots.setSpeed(1, -50,  50) #CHANGE THIS
             circle2.timer()
-            print "Hit green player"
+            print "Hit Triangles"
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
@@ -521,16 +586,16 @@ while not gameExit:
             color = blue
             #robots.setSpeed(0, -50,  50) #CHANGE THIS
             circle.timer()
-            print "Hit blue player"
+            print "Hit Squares"
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
 
             if score2 <= 8.5 and score != -15:
-                score2+=1
+                score2 += 1
 
             else:
-                score2+=1
+                score2 += 1
                 gameOver = True
 
         # Remove the bullet if it flies up off the screen
@@ -549,84 +614,21 @@ while not gameExit:
 
     # Clear the screen
     gameDisplay.fill(black)
-
-    wallx = 170; wally = 110; wallwidth = 10; wallheight = 290;
-    wallx2 = displaywidth/2; wally2 = 0; wallheight2 = 80
-
-    upper = 10; lower = 5; upper2 = upper; lower2 = lower;
-
-    #Draw Walls
-    wall = pygame.draw.rect(gameDisplay, white, (wallx, wally, wallwidth, wallheight), 0)
-    wall2 = pygame.draw.rect(gameDisplay, white, (displaywidth-wallx, wally, wallwidth, wallheight), 0)
-
-    wall3 = pygame.draw.rect(gameDisplay, white, (wallx2, wally2, wallwidth, wallheight2), 0)
-    wall4 = pygame.draw.rect(gameDisplay, white, (wallx2, displayheight-wally2-wallheight2, wallwidth, wallheight2), 0)
-
-    #wall5 = pygame.draw.rect(gameDisplay, white, (wallx2-60, displayheight/2, 140, wallwidth), 0)
-    """"
-    #Wall 1
-
-    #Right side of wall 1
-    if centerRobot1[0] - distance1 >= wallx + lower and centerRobot1[0] - distance1 <= wallx + upper:
-        #right = 0;
-        color = blue
-        print "Player 1 near right side wall 1"
-
-    if centerRobot2[0] - distance2 <= wallx + upper and centerRobot2[0] - distance2 >= wallx + lower:
-        #right = 0;
-        color2 = blue
-        print "Player 2 near right side wall 1"
-
-    #Left side wall 1
-    if centerRobot1[0] + distance1 >= wallx - upper and centerRobot1[0] + distance1 <= wallx - lower:
-        #left = 0;
-        color = green
-        print "Player 1 near left side wall 1"
-
-    if centerRobot2[0] + distance2 >= wallx - upper and centerRobot2[0] + distance2 <= wallx - lower:
-        #left = 0;
-        color2 = green
-        print "Player 2 near left side wall 1"
-
-    #Wall 2
-
-    #Right side of wall 2
-    if centerRobot1[0] - distance1 <= displaywidth - wallx + upper2 and centerRobot1[0] - distance1 >= displaywidth - wallx + lower2:
-        #right = 0;
-        print "Player 1 near right side wall 2"
-        color = red
-
-    if centerRobot2[0] - distance2 <= displaywidth - wallx + upper2 and centerRobot2[0] - distance2 >= displaywidth - wallx + lower2:
-        #right = 0;
-        print "Player 2 near right side wall 2"
-        color2 = red
-
-    #Left side of wall 2
-    if centerRobot1[0] + distance1 >= displaywidth - wallx - upper2 and centerRobot1[0] + distance1 <= displaywidth - wallx - lower2:
-        #left = 0;
-        print "Player 1 near left side wall 2"
-        color = blue
-
-    if centerRobot2[0] + distance2 >= displaywidth - wallx - upper2 and centerRobot2[0] + distance2 <= displaywidth - wallx - lower2:
-        #left = 0;
-        print "Player 2 near left side wall 2"
-        color2 = blue
-    """
-
+    
     # Draw all the spites
     all_sprites_list.draw(gameDisplay)
     circle.update()
     circle2.update()
     
     #Draw Orientation Points
-    pygame.draw.circle(gameDisplay, blue2,( int(rotatedPoint1[0] + centerRobot1[0] + 10), int(rotatedPoint1[1]+ centerRobot1[1] + 10)), 10, 0)
-    pygame.draw.circle(gameDisplay, blue2,( int(rotatedPoint2[0] + centerRobot2[0] + 2),  int(rotatedPoint2[1] + centerRobot2[1] + 2 )), 10, 0)
-    
+    pygame.draw.circle(gameDisplay, blue2,( int(rotatedPoint1[0] + centerRobot1[0] + 10), int(rotatedPoint1[1]+ centerRobot1[1] + 15)), 20, 0)
+    pygame.draw.circle(gameDisplay, blue2,( int(rotatedPoint2[0] + centerRobot2[0] + 2),  int(rotatedPoint2[1] + centerRobot2[1] + 15)), 20, 0)
+
     #Draw scores in the top corners
-    screen_text = font.render("Square Score " + str(score), True, red)
+    screen_text = font.render("Triangle Score " + str(score), True, blue2)
     gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
 
-    screen_text = font.render("Triangle Score " + str(score2), True, red)
+    screen_text = font.render("Square Score " + str(score2), True, blue2)
     gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 480])
 
     

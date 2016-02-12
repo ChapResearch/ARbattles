@@ -634,8 +634,8 @@ while not gameExit:
     circle2.update()
     
     #Draw Orientation Points
-    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint1[0] + centerRobot1[0]), int(rotatedPoint1[1]+ centerRobot1[1])), 10, 0)
-    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint2[0] + centerRobot2[0]), int(rotatedPoint2[1] + centerRobot2[1])), 10, 0)
+    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint1[0] + centerRobot1[0]), int(rotatedPoint1[1]+ centerRobot1[1])), 15, 0)
+    pygame.draw.circle(gameDisplay, blue2,(int(rotatedPoint2[0] + centerRobot2[0]), int(rotatedPoint2[1] + centerRobot2[1])), 15, 0)
     
     #Print scores in the top corners
     screen_text = font.render("Triangle Score " + str(score), True, red)
