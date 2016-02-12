@@ -39,9 +39,9 @@ class Tank:
 
     def _tankLoad(self,color):
         main_dir = os.path.split(os.path.abspath(__file__))[0]
-        path = os.path.join(main_dir, 'Media', color + "100.png")
+        path = os.path.join(main_dir, 'Media', color + "200.png")
         return pygame.image.load(path).convert_alpha()
 
     def draw(self,screen):
         screen.blit(self.image,self.pos)
-        pygame.draw.circle(screen,(255,255,255),self.pos.center,20)
+        pygame.draw.circle(screen,(255,255,255),self.pos.center,50)
