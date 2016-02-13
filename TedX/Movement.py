@@ -127,3 +127,4 @@ def reset():
 def stop(robot):
     robots.setSpeed(robot, 0, 0)
 
+

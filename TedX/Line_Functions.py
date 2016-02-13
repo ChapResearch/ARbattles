@@ -51,7 +51,12 @@ def convertVisionDataToScreenCoords(data, width, height):
 
 def isIntersecting(center1, center2, radius1, radius2, buffer = 0):
     distance = math.sqrt(math.pow((center1[0] - center2[0]),2) + math.pow((center1[1] - center2[1]),2))
-    return distance < radius1 + radius2 + buffer
+    if distance < radius1 + radius2 + buffer:
+        #print "True, will intersect"
+        return True
+    else:
+        #print "False, won't intersect"
+        return False
 
 def isHittingBoundary(pos, radius, buffer, boundary, screenwidth, screenheight):
 
@@ -66,5 +71,7 @@ def isHittingBoundary(pos, radius, buffer, boundary, screenwidth, screenheight):
 
 def isHittingAnyBoundary(pos, radius, buffer, screenwidth, screenheight):
     if not isHittingBoundary(pos, radius, buffer, "left", screenwidth, screenheight) and not isHittingBoundary(pos, radius, buffer, "right", screenwidth, screenheight) and not isHittingBoundary(pos, radius, buffer, "top", screenwidth, screenheight) and not isHittingBoundary(pos, radius, buffer, "bottom", screenwidth, screenheight):
+        #print "Won't hit a boundary"
         return False
+    #print "Will hit a boundary"
     return True
