@@ -273,7 +273,7 @@ while not gameExit:
         bullet2_list.empty()
 
         gameDisplay.fill(black)
-        message_to_screen("Game over, press Start to play again or Q to quit", red, displaywidth/2 - 200, displayheight/2)
+        #message_to_screen("Game over, press Start to play again or Q to quit", red, displaywidth/2 - 200, displayheight/2)
 
         screen_text = font.render("Triangle Score " + str(score), True, blue2)
         gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
@@ -636,9 +636,10 @@ while not gameExit:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
+
             #Use the code below to penalize tank 1 for missing after shooting
-            if score <= 8.5 and score2 != -15:
-                score -= 0.1
+            if score <= 8.5 and score2 != -10:
+                score -= 0.5
                 print ("Tank 1 missed!")
 
 
@@ -656,7 +657,6 @@ while not gameExit:
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
-
             if score2 <= 8.5 and score != -15:
                 score2 += 1
 
@@ -669,9 +669,10 @@ while not gameExit:
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
+
             #Use the code below to penalize tank 2 for missing after shooting
-            if score2 <= 8.5 and score != -15:
-                score2 -= 0.1
+            if score2 <= 8.5 and score != -10:
+                score2 -= 0.5
                 print ("Tank 2 missed!")
 
     # --- Draw a frame
@@ -690,7 +691,7 @@ while not gameExit:
 
     #Draw scores in the top corners
     screen_text = font.render("Triangle Score " + str(score), True, blue)
-    gameDisplay.blit(screen_text, [displaywidth - 150, displayheight - 480])
+    gameDisplay.blit(screen_text, [displaywidth - 180, displayheight - 480])
 
     screen_text = font.render("Square Score " + str(score2), True, blue)
     gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 480])
