@@ -21,14 +21,14 @@ straightTime2 = 1
 def startBounce(robot, direc, sTime = 1):
     global case1, case2, direction1, direction2, straightTime1, straightTime2
     if robot == 0:
-        print "Start Bounce 1"
+        #print "Start Bounce 1"
         case1 = 0
         direction1 = direc
         straightTime1 = sTime
         bounce1()
 
     elif robot == 1:
-        print "Start Bounce 2"
+        #print "Start Bounce 2"
         case2 = 0
         direction2 = direc
         straightTime2 = sTime
@@ -118,5 +118,12 @@ def doTele(robot, left, right):
         robots.setSpeed(robot, left * -100, right * -100)
 
 def reset():
+    global case1, case2, target1, target2
     robots.setSpeed(0,0,0)
     robots.setSpeed(1,0,0)
+    case1 = -1
+    case2 = -1
+
+def stop(robot):
+    robots.setSpeed(robot, 0, 0)
+
