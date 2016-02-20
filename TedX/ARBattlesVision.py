@@ -2,9 +2,9 @@ import numpy as np
 import time
 import math
 import cv2
-import pygame
+
 import calibrate as cs
-screen = pygame.display.set_mode((640, 500))
+
 
 
 # oi0
@@ -21,12 +21,12 @@ blue = (73, 109, 173)
 white = (255, 255, 255)
 
 # Set the height and width of the display
-displaywidth = 640
+displaywidth = 750
 displayheight = 500
 
 blueLower = np.array([155,50,50])
 blueUpper = np.array([190,255,255])
-cap = cv2.VideoCapture(0);
+cap = cv2.VideoCapture(0)
 
 class ARBattlesVideo:
 
@@ -44,6 +44,7 @@ class ARBattlesVideo:
 
     def calibrate(self):
         obj = cs.Calibrate()
+        time.sleep(2)
         obj.calibrate()
         x,y,w,h = obj.getCoordinates()
         self.originX = x
@@ -161,10 +162,11 @@ class ARBattlesVideo:
         return False
 
 #TEST#
-time.sleep(5)
-object = ARBattlesVideo()
-object.calibrate()
-print(object.originX, object.originY, object.width, object.hieght)
+#time.sleep(5)
+#object = ARBattlesVideo()
+#object.calibrate()
+#print(object.originX, object.originY, object.width, object.hieght)
+
 #time.sleep(10)
 #time.sleep(5)
 #print(object.robotLocation(1))

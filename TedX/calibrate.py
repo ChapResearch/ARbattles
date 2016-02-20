@@ -8,9 +8,9 @@ import cv2
 # interface:
 #       calibrate() - assuming there are four blue corners in video frame, return the four corners
 #
-redLower = np.array([170,50,50])
-redUpper = np.array([185,255,255])
-cap = cv2.VideoCapture(0);
+redLower = np.array([155,50,50])
+redUpper = np.array([190,255,255])
+cap = cv2.VideoCapture(0)
 
 class Calibrate:
     def __init__(self):

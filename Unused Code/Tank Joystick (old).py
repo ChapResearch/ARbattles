@@ -4,14 +4,26 @@ import math
 import sys
 import Line_Functions
 import Movement
-
-'''
-from robotControl import robotControl
-
-robots = robotControl(3)
-'''
+import datetime
 
 pygame.init()
+
+displaywidth = 750
+displayheight = 500
+gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
+pygame.display.set_caption('Tank Game')
+red3 = (202, 26, 26)
+
+print "Draw"
+gameDisplay.fill((255, 255, 255))
+pygame.draw.rect(gameDisplay, red3, [0, 0, displaywidth/4, displayheight/4])
+pygame.draw.rect(gameDisplay, red3,[displaywidth - 100, displayheight - 100, (displaywidth/4), (displayheight/4)])
+pygame.display.update()
+
+print "Set Target"
+target = datetime.datetime.now() + datetime.timedelta(seconds=45)
+while(datetime.datetime.now() < target):
+    continue
 
 # Define Colors
 white = (255, 255, 255)
@@ -40,7 +52,7 @@ green2 = (0, 200, 0)
 font = pygame.font.SysFont(None, 25)
 
 #Sizing blocks and bullets
-block_size = 10;
+block_size = 10
 
 player_sizex = 50
 player_sizey = 60
@@ -92,8 +104,6 @@ class Circle (pygame.sprite.Sprite):
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT, time)
-        
-
 
 class Circle2 (pygame.sprite.Sprite):
     global x2, y2, distance2, time, RESETEVENT2
@@ -203,21 +213,6 @@ FPS = 20
 #Init Game Variables
 score = 0
 score2 = 0
-
-tankleftx = displaywidth/2+100
-tanklefty = displayheight/2-10
-tankleftx_c = 0
-tanklefty_c = 0
-
-tankrightx = displaywidth/2 - 120
-tankrighty = displayheight/2-10
-tankrightx_c = 0
-tankrighty_c = 0
-
-hello = True
-
-
-
 
 
 # -------- Main Program Loop -----------
@@ -387,9 +382,9 @@ while not gameExit:
     #if centerRobot1[0] - distance1 < 100:
     #    print "Robot 1 Left Wall"
     
-    if hello == True:
-        Movement.startBounce(1)
-        hello = False
+    #if hello == True:
+    #    Movement.startBounce(1)
+    #    hello = False
         
     Movement.doAuto()  
     

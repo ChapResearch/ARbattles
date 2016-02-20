@@ -3,7 +3,7 @@ import time
 import math
 import cv2
 
-cap = cv2.VideoCapture(0); # get USB webcam input
+cap = cv2.VideoCapture(0) # get USB webcam input
 numPlayers = 4
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH , 600)
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 800)
@@ -24,6 +24,7 @@ numPlayers = 4
 #HSV bounds
 blueLower = np.array([160, 50, 50])
 blueUpper = np.array([180, 255, 255])
+
 def distance(point1, point2):
     sq1 = (point1[0]-point2[0])*(point1[0]-point2[0])
     sq2 = (point1[1]-point2[1])*(point1[1]-point2[1])
@@ -47,9 +48,9 @@ def determineShape(cnts):
     if numsides == 4:
        # if equalSides(boxone):
         #    return "Blue Square"
-        return "Blue Quadrilateral"
+        return "Red Quadrilateral"
     elif numsides == 3:
-        return "Blue Triangle"
+        return "Red Triangle"
     #elif numsides == 5:
      #   return "Blue Pentagon"
     #elif numsides == 6:
