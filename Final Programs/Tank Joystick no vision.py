@@ -501,6 +501,7 @@ while not gameExit:
     speed = 80
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
     rotatedPoint2 = [(math.cos(-1 * rotationRobot2) * distance2), (math.sin(-1 * rotationRobot2) * distance2)]
+
     Movement.doAuto()
 
     collision = False
