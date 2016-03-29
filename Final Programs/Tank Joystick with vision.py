@@ -253,6 +253,7 @@ if joystick_count > 1:
 
 # -------- Main Program Loop -----------
 firstTime = False
+count = 0;
 while not gameExit:
 
     # ----- Game Over -----
@@ -291,8 +292,10 @@ while not gameExit:
             gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
 
         else:
-            screen_text = font.render("What happened?", True, blue2)
+            screen_text = font.render("Game Over", True, blue2)
             gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+
+        pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -333,10 +336,28 @@ while not gameExit:
                 gameDisplay = pygame.display.set_mode([displaywidth, displayheight]) # Normal Window
 
             if event.key == pygame.K_d:
-                stop = True     # Stop all robot activity
+                print "Stop Robots"
+                stop = True      # Stop all robot activity
 
             if event.key == pygame.K_f:
-                stop = False    # Start robot
+                print "Start Robots"
+                stop = False     # Start robot
+
+            if event.key == pygame.K_g:
+                print "Game Over Keyboard"
+                moving = True
+                if count > 20:
+                    print "starting"
+                    Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displaywidth, displayheight)
+                    print "doneee"
+                    count+=1
+                print "the game is over"
+                gameOver = True  # Force a game over
+
+            if event.key == pygame.K_h:
+                print "Game Over Sequence"
+                Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displaywidth, displayheight)
+                print "Fin"
 
         if stop == False:
             if event.type == pygame.JOYAXISMOTION:
@@ -489,7 +510,12 @@ while not gameExit:
     speed = 80
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
     rotatedPoint2 = [(math.cos(-1 * rotationRobot2) * distance2), (math.sin(-1 * rotationRobot2) * distance2)]
-    Movement.doAuto()
+
+    if (stop == False):
+        Movement.doAuto()
+    else:
+        print "AHHHHHH"
+        Movement.reset()
 
     collision = False
     #Line_Functions.isHittingBoundary(centerRobot1,distance1,30,'left', displaywidth, displayheight)

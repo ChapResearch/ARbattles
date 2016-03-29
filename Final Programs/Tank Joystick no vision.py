@@ -101,7 +101,7 @@ collisionPrecedent = True
 
 class Circle (pygame.sprite.Sprite):
     global x1, y1, distance1, time, RESETEVENT, rotationRobot1
-    """This class represents the Triangle tank."""
+    """This class represents the Triangle tank"""
 
     def __init__(self):
         # Call the parent class (Sprite) constructor
@@ -124,7 +124,7 @@ class Circle (pygame.sprite.Sprite):
 
 class Circle2 (pygame.sprite.Sprite):
     global x2, y2, distance2, time, RESETEVENT2
-    """This class represents the Square tank."""
+    """This class represents the Square tank"""
 
     def __init__(self):
         # Call the parent class (Sprite) constructor

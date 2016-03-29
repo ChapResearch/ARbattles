@@ -1,6 +1,8 @@
 import time
 import pygame
 import datetime
+import Line_Functions
+import math
 
 from robotControl import robotControl
 robots = robotControl('COM4')
@@ -175,9 +177,59 @@ def reset():
 #
 
 def stop(robot):
-    robots.setSpeed(robot, 0, 0)
+    setSpeed(robot, 0, 0)
+
 
 def setSpeed(robot, left, right):
     robots.setSpeed(robot, left, right)
 
 
+def moveRobotTo(robot, currentPos, currentRotation, screenwidth, screenheight, buffer):
+    if currentPos[0] > screenwidth - buffer*2:
+        setSpeed(robot, -50, -50)
+        print "bottom wall"
+
+    elif currentPos[1] > screenheight - buffer*2:
+        setSpeed(robot, -50, -50)
+        print "right wall"
+
+    elif currentPos[0] < 0 + buffer*2:
+        setSpeed(robot, 50, 50)
+        print "left wall"
+
+    elif currentPos[1] < 0 + buffer*2:
+        setSpeed(robot, 50, 50)
+        print "top wall"
+
+    else:
+        print "THE ELSE"
+
+def endGameSequence(centerPos1, centerPos2, rotationRobot1, rotationRobot2, distance, buffer, speed, displaywidth, displayheight):
+    distance1 = distance
+    distance2 = distance
+    futureForward1 = [centerPos1[0] + speed * math.cos(rotationRobot1), centerPos1[1] + speed * math.sin(rotationRobot1)]
+    futureBackward1 = [centerPos1[0] - speed * math.cos(rotationRobot1), centerPos1[1] - speed * math.sin(rotationRobot1)]
+
+    if not Line_Functions.isHittingAnyBoundary(futureForward1, distance, 30, displaywidth, displayheight) and not Line_Functions.isIntersecting(futureBackward1, centerPos2, distance, distance, 20):
+        print "Move Forward 1"
+        startBounce(0, 'f', 0.5)
+
+    elif not Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(futureBackward1, centerPos2, distance1, distance2, 20):
+        print "Move Backward 1"
+        startBounce(0, 'b', 0.5)
+    else:
+        print "Stop 2"
+        stop(1)
+
+    futureForward2 = [centerPos2[0] + speed * math.cos(rotationRobot2), centerPos2[1] + speed * math.sin(rotationRobot2)]
+    futureBackward2 = [centerPos2[0] - speed * math.cos(rotationRobot2), centerPos2[1] - speed * math.sin(rotationRobot2)]
+
+    if not Line_Functions.isHittingAnyBoundary(futureForward2, distance2, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(centerPos1, futureForward2, distance1, distance2, 20):
+        print "Move Forward 2"
+        startBounce(1, 'f', 0.5)
+    elif not Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(centerPos1, futureBackward2, distance1, distance2, 20):
+        print "Move Backward 2"
+        startBounce(1, 'b', 0.5)
+    else:
+        print "Stop 2"
+        stop(1)
