@@ -109,11 +109,11 @@ class Circle (pygame.sprite.Sprite):
         self.image.fill(white)
         #self.tank = Tank("blue")
 
-        self.update()
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(100), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color,(x1, y1), int(80), 10)
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(100), 10)
         #self.tank.move((x1,y1), math.degrees(rotationRobot1))
         #gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
 
@@ -132,11 +132,11 @@ class Circle2 (pygame.sprite.Sprite):
         self.image.fill(blue)
         self.tank = Tank("green")
 
-        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(100), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(100), 10)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
@@ -449,7 +449,7 @@ while not gameExit:
             ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
             ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
 
-    baddata = False
+    """baddata = False
     if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
         baddata = True
     if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
@@ -460,35 +460,35 @@ while not gameExit:
         rotationRobot1 = lastRotationRobot1
         centerRobot2 = lastPosRobot2
         rotationRobot2 = lastRotationRobot2
+    """
+    #else:
+    testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
+    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
 
-    else:
-        testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
-        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+    #Split Test Data into two robots
+    robot2 = testData[0]
+    robot1 = testData[1]
 
-        #Split Test Data into two robots
-        robot2 = testData[0]
-        robot1 = testData[1]
+    #Find centers
+    centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
+    centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
 
-        #Find centers
-        centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
-        centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
-
-        #Determine the degrees the robot is facing from east
-        rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
-        rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+    #Determine the degrees the robot is facing from east
+    rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
+    rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
 
 
-        ###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
-        if lastPosRobot1 is not None:
-            if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
-                centerRobot1 = lastPosRobot1
-                rotationRobot1 = lastRotationRobot1
+    """###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
+    if lastPosRobot1 is not None:
+        if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
+            centerRobot1 = lastPosRobot1
+            rotationRobot1 = lastRotationRobot1
 
-        if lastPosRobot2 is not None:
-            if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
-                centerRobot2 = lastPosRobot2
-                rotationRobot2 = lastRotationRobot2
-
+    if lastPosRobot2 is not None:
+        if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
+            centerRobot2 = lastPosRobot2
+            rotationRobot2 = lastRotationRobot2
+    """
     #Set last position/rotation to current position/rotation
     lastPosRobot1 = centerRobot1
     lastPosRobot2 = centerRobot2
