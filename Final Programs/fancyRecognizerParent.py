@@ -3,7 +3,7 @@ import time
 import math
 import cv2
 
-cap = cv2.VideoCapture(0) # get USB webcam input
+cap = cv2.VideoCapture(1) # get USB webcam input
 numPlayers = 4
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH , 600)
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 800)
@@ -75,8 +75,9 @@ while True:
     # determine which pixels fall within the blue boundaries
     # and then blur the binary image
     blue = cv2.inRange(hsv, blueLower, blueUpper)
-    blue = cv2.medianBlur(blue, 5) # get rid of alt and pepper
-    #blue = cv2.GaussianBlur(blue, (3, 3), 0) #3,3
+    ##blue = cv2.GaussianBlur(blue, (3, 3), 0) #3,3
+    blue = cv2.medianBlur(blue, 7) # get rid of alt and pepper
+
 
     (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,
     	cv2.CHAIN_APPROX_SIMPLE)
@@ -97,6 +98,7 @@ while True:
         cv2.drawContours(frame, [box2], -1, (0, 255, 0), 2)
         cv2.putText(frame,determineShape(cnt1),(x+w/2,y+h/2), cv2.FONT_HERSHEY_COMPLEX_SMALL,1, (0,255,0))
         cv2.circle(frame, (x+w/2,y+h/2), 2, (0,255,0),3)
+        print x+w/2,y+h/2
 
         ############################################################### next robot
         if numPlayers >1:
