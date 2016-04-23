@@ -351,7 +351,7 @@ while not gameExit:
                     Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displaywidth, displayheight)
                     print "doneee"
                     count+=1
-                print "the game is over"
+                print "The game is over"
                 gameOver = True  # Force a game over
 
             if event.key == pygame.K_h:
@@ -449,7 +449,7 @@ while not gameExit:
             ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
             ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
 
-    """baddata = False
+    baddata = False
     if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
         baddata = True
     if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
@@ -460,35 +460,35 @@ while not gameExit:
         rotationRobot1 = lastRotationRobot1
         centerRobot2 = lastPosRobot2
         rotationRobot2 = lastRotationRobot2
-    """
-    #else:
-    testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
-    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
 
-    #Split Test Data into two robots
-    robot2 = testData[0]
-    robot1 = testData[1]
+    else:
+        testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
+        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
 
-    #Find centers
-    centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
-    centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
+        #Split Test Data into two robots
+        robot2 = testData[0]
+        robot1 = testData[1]
 
-    #Determine the degrees the robot is facing from east
-    rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
-    rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+        #Find centers
+        centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
+        centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
+
+        #Determine the degrees the robot is facing from east
+        rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
+        rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
 
 
-    """###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
-    if lastPosRobot1 is not None:
-        if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
-            centerRobot1 = lastPosRobot1
-            rotationRobot1 = lastRotationRobot1
+        ###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
+        if lastPosRobot1 is not None:
+            if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
+                centerRobot1 = lastPosRobot1
+                rotationRobot1 = lastRotationRobot1
 
-    if lastPosRobot2 is not None:
-        if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
-            centerRobot2 = lastPosRobot2
-            rotationRobot2 = lastRotationRobot2
-    """
+        if lastPosRobot2 is not None:
+            if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
+                centerRobot2 = lastPosRobot2
+                rotationRobot2 = lastRotationRobot2
+
     #Set last position/rotation to current position/rotation
     lastPosRobot1 = centerRobot1
     lastPosRobot2 = centerRobot2
@@ -498,8 +498,8 @@ while not gameExit:
     x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
 
     #Determine the distence between the two given points (Currently hardcoded)
-    distance1 = 80
-    distance2 = 80
+    distance1 = 100
+    distance2 = 100
 
     #end of vision
 
