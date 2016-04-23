@@ -58,11 +58,11 @@ red2 = (220, 0, 0)
 RED = (255, 0, 0)
 
 BLUE = (73, 109, 173)
-blue = (73, 109, 173) #Orientation Point Triangle
+blue = (73, 109, 173)
 blue2 = (204, 255, 240)
 
 GREEN = (109, 157, 77)
-green = (109, 157, 77) #Orientation Point Square
+green = (109, 157, 77)
 green2 = (0, 200, 0)
 
 purple = (128,0,128)
@@ -108,12 +108,12 @@ class Circle (pygame.sprite.Sprite):
         self.image = pygame.Surface((10,10))
         self.image.fill(white)
         #self.tank = Tank("blue")
-        print "Distance 1" + str(distance1)
-        pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
+
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(100), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(100), 10)
         #self.tank.move((x1,y1), math.degrees(rotationRobot1))
         #gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
 
@@ -132,11 +132,11 @@ class Circle2 (pygame.sprite.Sprite):
         self.image.fill(blue)
         self.tank = Tank("green")
 
-        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(100), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,(x2, y2), int(100), 10)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
@@ -234,7 +234,7 @@ lastPosRobot2 = None
 lastRotationRobot1 = None
 lastRotationRobot2 = None
 
-flickerTolerence = 0.12
+flickerTolerence = 0.1
 flickrWidthTolerence = flickerTolerence * displaywidth
 flickrHeightTolerence = flickerTolerence * displayheight
 
@@ -253,7 +253,7 @@ if joystick_count > 1:
 
 # -------- Main Program Loop -----------
 firstTime = False
-count = 0
+count = 0;
 while not gameExit:
 
     # ----- Game Over -----
@@ -341,17 +341,17 @@ while not gameExit:
 
             if event.key == pygame.K_f:
                 print "Start Robots"
-                stop = False     # Start robots
+                stop = False     # Start robot
 
             if event.key == pygame.K_g:
                 print "Game Over Keyboard"
                 moving = True
                 if count > 20:
                     print "starting"
-                    Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1, rotationRobot2, distance1, 20, speed, displaywidth, displayheight)
+                    Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displaywidth, displayheight)
                     print "doneee"
                     count+=1
-                print "The game is over"
+                print "the game is over"
                 gameOver = True  # Force a game over
 
             if event.key == pygame.K_h:
@@ -381,7 +381,6 @@ while not gameExit:
                     if abs(right2) < 0.020:
                         right2 = 0
                     Movement.doTele(1, left2, right2)
-
         else:
             left = 0
             right = 0
@@ -450,7 +449,7 @@ while not gameExit:
             ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
             ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
 
-    baddata = False
+    """baddata = False
     if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
         baddata = True
     if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
@@ -461,35 +460,35 @@ while not gameExit:
         rotationRobot1 = lastRotationRobot1
         centerRobot2 = lastPosRobot2
         rotationRobot2 = lastRotationRobot2
+    """
+    #else:
+    testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
+    testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
 
-    else:
-        testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
-        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+    #Split Test Data into two robots
+    robot2 = testData[0]
+    robot1 = testData[1]
 
-        #Split Test Data into two robots
-        robot2 = testData[0]
-        robot1 = testData[1]
+    #Find centers
+    centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
+    centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
 
-        #Find centers
-        centerRobot1 = Line_Functions.centerOfLine(robot1[0], robot1[1])
-        centerRobot2 = Line_Functions.centerOfLine(robot2[0], robot2[1])
-
-        #Determine the degrees the robot is facing from east
-        rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
-        rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
+    #Determine the degrees the robot is facing from east
+    rotationRobot1 = Line_Functions.rotationOfLine(robot1[0], robot1[1])
+    rotationRobot2 = Line_Functions.rotationOfLine(robot2[0], robot2[1])
 
 
-        ###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
-        if lastPosRobot1 is not None:
-            if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
-                centerRobot1 = lastPosRobot1
-                rotationRobot1 = lastRotationRobot1
+    """###Used to look for bad data from vision, if bad, set the pos/rotation to the last good data received
+    if lastPosRobot1 is not None:
+        if abs(centerRobot1[0] - lastPosRobot1[0]) > flickrWidthTolerence or abs(centerRobot1[1] - lastPosRobot1[1] > flickrHeightTolerence):
+            centerRobot1 = lastPosRobot1
+            rotationRobot1 = lastRotationRobot1
 
-        if lastPosRobot2 is not None:
-            if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
-                centerRobot2 = lastPosRobot2
-                rotationRobot2 = lastRotationRobot2
-
+    if lastPosRobot2 is not None:
+        if abs(centerRobot2[0] - lastPosRobot2[0]) > flickrWidthTolerence or abs(centerRobot2[1] - lastPosRobot2[1] > flickrHeightTolerence):
+            centerRobot2 = lastPosRobot2
+            rotationRobot2 = lastRotationRobot2
+    """
     #Set last position/rotation to current position/rotation
     lastPosRobot1 = centerRobot1
     lastPosRobot2 = centerRobot2
@@ -509,8 +508,6 @@ while not gameExit:
     #####
 
     speed = 80
-    stoprobot1 = False
-    stoprobot2 = False
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
     rotatedPoint2 = [(math.cos(-1 * rotationRobot2) * distance2), (math.sin(-1 * rotationRobot2) * distance2)]
 
@@ -543,10 +540,10 @@ while not gameExit:
         elif not Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(futureBackward1, centerRobot2, distance1, distance2, 20):
                 print "Move Backward 1"
                 Movement.startBounce(0, 'b', 0.5)
-        elif not stoprobot2:
+        else:
             print "Stop 1"
             Movement.stop(0)
-            stoprobot1 = True
+
         futureForward2 = [centerRobot2[0] + speed * math.cos(rotationRobot2), centerRobot2[1] + speed * math.sin(rotationRobot2)]
         futureBackward2 = [centerRobot2[0] - speed * math.cos(rotationRobot2), centerRobot2[1] - speed * math.sin(rotationRobot2)]
 
@@ -562,10 +559,9 @@ while not gameExit:
         elif not Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(centerRobot1, futureBackward2, distance1, distance2, 20):
             print "Move Backward 2"
             Movement.startBounce(1, 'b', 0.5)
-        elif not stoprobot1:
+        else:
             print "Stop 2"
             Movement.stop(1)
-            stoprobot2 = True
 
         if collision or collisionPrecedent:
             collision = False
@@ -574,76 +570,75 @@ while not gameExit:
     #Boundaries of each tank - Uses the Movement Class to bounce
     ##
 
-    if collision == False:
+    #if collision == False or collisionPrecedent:
 
-        #Left Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "left", displaywidth, displayheight):
-            print "Robot 1 Left Wall"
-            if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
-                Movement.startBounce(0, 'f')
-            else:
-                Movement.startBounce(0, 'b')
+    #Left Boundary
+    if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "left", displaywidth, displayheight):
+        print "Robot 1 Left Wall"
+        if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
+            Movement.startBounce(0, 'f')
+        else:
+            Movement.startBounce(0, 'b')
 
-        #Right Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "right", displaywidth, displayheight):
-            print "Robot 1 Right Wall"
-            if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
-                Movement.startBounce(0, 'b')
-            else:
-                Movement.startBounce(0, 'f')
+    #Right Boundary
+    if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "right", displaywidth, displayheight):
+        print "Robot 1 Right Wall"
+        if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
+            Movement.startBounce(0, 'b')
+        else:
+            Movement.startBounce(0, 'f')
 
-        #Bottom Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "bottom", displaywidth, displayheight):
-            print "Robot 1 Bottom Wall"
-            if rotationRobot1 > 0:
-                Movement.startBounce(0, 'f', 2)
-            else:
-                Movement.startBounce(0, 'b', 2)
+    #Bottom Boundary
+    if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "bottom", displaywidth, displayheight):
+        print "Robot 1 Bottom Wall"
+        if rotationRobot1 > 0:
+            Movement.startBounce(0, 'f', 2)
+        else:
+            Movement.startBounce(0, 'b', 2)
 
-        #Top Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "top", displaywidth, displayheight):
-            print "Robot 1 Top Wall"
-            if rotationRobot1 > 0:
-                Movement.startBounce(0, 'b', 0.5)
-                print "Coming through loop"
-            else:
-                Movement.startBounce(0, 'f', 0.5)
+    #Top Boundary
+    if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "top", displaywidth, displayheight):
+        print "Robot 1 Top Wall"
+        if rotationRobot1 > 0:
+            Movement.startBounce(0, 'b', 0.5)
+        else:
+            Movement.startBounce(0, 'f', 0.5)
 
-        ###Robot 2###
+    ###Robot 2###
 
-        #Left Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "left", displaywidth, displayheight):
-            print "Robot 2 Left Wall"
-            if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
-                Movement.startBounce(1, 'f')
-            else:
-                Movement.startBounce(1, 'b')
+    #Left Boundary
+    if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "left", displaywidth, displayheight):
+        print "Robot 2 Left Wall"
+        if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
+            Movement.startBounce(1, 'f')
+        else:
+            Movement.startBounce(1, 'b')
 
-        #Right Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "right", displaywidth, displayheight):
-            print "Robot 2 Right Wall"
-            if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
-                Movement.startBounce(1, 'b')
-            else:
-                Movement.startBounce(1, 'f')
+    #Right Boundary
+    if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "right", displaywidth, displayheight):
+        print "Robot 2 Right Wall"
+        if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
+            Movement.startBounce(1, 'b')
+        else:
+            Movement.startBounce(1, 'f')
 
-        #Bottom Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "bottom", displaywidth, displayheight):
-            print "Robot 2 Bottom Wall"
-            if rotationRobot2 > 0:
-                Movement.startBounce(1, 'f', 2)
-            else:
-                Movement.startBounce(1, 'b', 2)
+    #Bottom Boundary
+    if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "bottom", displaywidth, displayheight):
+        print "Robot 2 Bottom Wall"
+        if rotationRobot2 > 0:
+            Movement.startBounce(1, 'f', 2)
+        else:
+            Movement.startBounce(1, 'b', 2)
 
-        #Top Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "top", displaywidth, displayheight):
-            print "Robot 2 Top Wall"
-            if rotationRobot2 > 0:
-                Movement.startBounce(1, 'b', 0.5)
-            else:
-                Movement.startBounce(1, 'f', 0.5)
+    #Top Boundary
+    if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "top", displaywidth, displayheight):
+        print "Robot 2 Top Wall"
+        if rotationRobot2 > 0:
+            Movement.startBounce(1, 'b', 0.5)
+        else:
+            Movement.startBounce(1, 'f', 0.5)
 
-        #End of boundaries
+    #End of boundaries
 
 
 
@@ -751,10 +746,10 @@ while not gameExit:
     screen_text = font.render("Square Score " + str(score2), True, blue)
     gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 460])
 
-    
+
     # Update the screen
     pygame.display.flip()
-    
+
     # --- Limit to frames per second
     clock.tick(FPS)
 

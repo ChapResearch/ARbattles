@@ -6,7 +6,6 @@ import cv2
 import calibrate as cs
 
 
-
 # oi0
 # Contains vision related methods, include recognizing the robots, determining orientation
 #
@@ -40,7 +39,7 @@ class ARBattlesVideo:
         self.originX = 244
         self.originY = 233
         self.width = 149
-        self.hieght = 123
+        self.height = 123
 
     def calibrate(self):
         obj = cs.Calibrate()
@@ -50,7 +49,7 @@ class ARBattlesVideo:
         self.originX = x
         self.originY = y
         self.width = w
-        self.hieght = h
+        self.height = h
 
 
     def robotLocation(self, roboID):
@@ -61,7 +60,7 @@ class ARBattlesVideo:
         YB={}
         YS={}
         # check to see if any contours were found
-        #cv2.imshow("Tracking", frame)
+        #cv2.imshow("Tracking", blue)
         #cv2.imshow("Blue", blue)
         XB["Triangle"] = 0
         XS["Triangle"] = 0
@@ -112,12 +111,14 @@ class ARBattlesVideo:
         if(roboID == 2):
             return self.cvt021(XS["Triangle"], YS["Triangle"]), self.cvt021(XB["Triangle"], YB["Triangle"])
         return XB,XS,YB,YS
+
     def determineShape(self,cnts):
         SHAPES=["0","1","2","Triangle", "Quadrilateral", "5", "6"]
         approx = cv2.approxPolyDP(cnts, 0.1*cv2.arcLength(cnts,True),True)
         numsides = len(approx)
         #print(numsides)
         return SHAPES[numsides]
+
     def getCenterX(self,cnt):
         M=cv2.moments(cnt)
         if(M['m00']!=0):
@@ -125,6 +126,7 @@ class ARBattlesVideo:
         else:
              cx = 0
         return float(cx)
+
     def getCenterY(self,cnt):
         M=cv2.moments(cnt)
         if(M['m00']!=0):
@@ -132,6 +134,7 @@ class ARBattlesVideo:
         else:
             cy = 0
         return float(cy)
+
     def getContours(self):
         (grabbed, frame) = cap.read()
         tempFrame = frame
@@ -143,7 +146,6 @@ class ARBattlesVideo:
         #print("hi1")
         blue = cv2.inRange(hsv, blueLower, blueUpper)
         #print("hi2")
-
         blue = cv2.medianBlur(blue, 5) # get rid of salt and pepper
         #print("hi3")
         (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,
@@ -151,10 +153,11 @@ class ARBattlesVideo:
         #print("hi4")
         #print(cnts)
         cv2.imshow("Tracking",blue)
+        #cv2.imshow("Blue", frame)
         return sorted(cnts,key = cv2.contourArea, reverse = True)
 
     def cvt021(self, xRaw, yRaw):
-        return float((xRaw-self.originX)/self.width), float((yRaw-self.originY)/self.hieght)
+        return float((xRaw-self.originX)/self.width), float((yRaw-self.originY)/self.height)
 
     def closeTo(self, value1, value2, range):
         if(math.fabs(value2-value1) <= range):
@@ -165,7 +168,7 @@ class ARBattlesVideo:
 #time.sleep(5)
 #object = ARBattlesVideo()
 #object.calibrate()
-#print(object.originX, object.originY, object.width, object.hieght)
+#print(object.originX, object.originY, object.width, object.height)
 
 #time.sleep(10)
 #time.sleep(5)

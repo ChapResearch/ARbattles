@@ -3,7 +3,7 @@ import time
 import math
 import cv2
 
-cap = cv2.VideoCapture(1) # get USB webcam input
+cap = cv2.VideoCapture(0) # get USB webcam input
 numPlayers = 4
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH , 600)
 #cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 800)
@@ -33,7 +33,7 @@ def distance(point1, point2):
 def WithinError(a,b,c,d,e):
     if b-e < a < b+e and c-e < d <c+e and a-e< c <a+e:
         return True
-    return False;
+    return False
 
 def equalSides(boxy):
     if WithinError(distance(boxy[0],boxy[1]), distance(boxy[1],boxy[2]),distance(boxy[2], boxy[3]),distance(boxy[3],boxy[0]), 15):
@@ -76,7 +76,7 @@ while True:
     # and then blur the binary image
     blue = cv2.inRange(hsv, blueLower, blueUpper)
     ##blue = cv2.GaussianBlur(blue, (3, 3), 0) #3,3
-    blue = cv2.medianBlur(blue, 7) # get rid of alt and pepper
+    blue = cv2.medianBlur(blue, 7) # get rid of salt and pepper
 
 
     (cnts, _) = cv2.findContours(blue.copy(), cv2.RETR_EXTERNAL,

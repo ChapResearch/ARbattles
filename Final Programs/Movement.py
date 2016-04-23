@@ -26,8 +26,8 @@ direction1 = 'x'
 direction2 = 'x'
 
 #straightTime amount of time spent going to forward or backwards, optional parameter
-straightTime1 = 1
-straightTime2 = 1
+straightTime1 = 0.5
+straightTime2 = 0.5
 
 #
 # startBounce() - Given the robot, direction and optional amount of time moving straight,
@@ -60,26 +60,26 @@ def bounce1():
     global target1, case1, firstTime
     if case1 == 0:
         if firstTime:
-            print "robot 1 case 0"
             if (direction1 == 'b'):
                 robots.setSpeed(0, -50, -50)
             elif (direction1 == 'f'):
                 robots.setSpeed(0, 50, 50)
             target1 = datetime.datetime.now() + datetime.timedelta(seconds=straightTime1)
+            print "robot 1 case 0"
             firstTime = False
 
     elif case1 == 1:
         if firstTime:
-            print "robot 1 case 1"
             robots.setSpeed(0, -50, 50)
-            target1 = datetime.datetime.now() + datetime.timedelta(milliseconds=500)
+            target1 = datetime.datetime.now() + datetime.timedelta(milliseconds=300)
+            print "robot 1 case 1"
             firstTime = False
 
     elif case1 == 2:
         if firstTime:
-            print "robot 1 case 2"
             robots.setSpeed(0, 0, 0)
             target1 = datetime.datetime.now() + datetime.timedelta(milliseconds=100)
+            print "robot 1 case 2"
             firstTime = False
 
 
@@ -104,7 +104,7 @@ def bounce2():
         if firstTime2:
             print "robot 2 case 1"
             robots.setSpeed(1, -50, 50)
-            target2 = datetime.datetime.now() + datetime.timedelta(milliseconds=500)
+            target2 = datetime.datetime.now() + datetime.timedelta(milliseconds=300)
             firstTime2 = False
 
     elif case2 == 2:
