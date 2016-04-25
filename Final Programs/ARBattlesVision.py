@@ -74,31 +74,34 @@ class ARBattlesVideo:
         while(notFound):
             try:
                 cnts = self.getContours()[0:NUM_OF_BLUE]
-                for i in range(0,len(cnts)):
-                    if i < NUM_OF_ROBOTS:
-                        tempXCenter = self.getCenterX(cnts[i])
-                        tempYCenter = self.getCenterY(cnts[i])
-                        while(tempXCenter<=0 or tempYCenter<=0):
-                            cnts =self.getContours()[0:NUM_OF_BLUE]
+                if cv2.contourArea(cnts[2] > 10):
+                    for i in range(0,len(cnts)):
+                        if i < NUM_OF_ROBOTS:
                             tempXCenter = self.getCenterX(cnts[i])
                             tempYCenter = self.getCenterY(cnts[i])
-                            #print(tempXCenter)
-                        XB[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
-                        YB[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
-                        #print "Big stuff"
-                    else:
-                        tempXCenter = self.getCenterX(cnts[i])
-                        while(tempXCenter<=0 or tempYCenter<=0):
-                            cnts =self.getContours()[0:NUM_OF_BLUE]
+                            while(tempXCenter<=0 or tempYCenter<=0):
+                                cnts =self.getContours()[0:NUM_OF_BLUE]
+                                tempXCenter = self.getCenterX(cnts[i])
+                                tempYCenter = self.getCenterY(cnts[i])
+                                #print(tempXCenter)
+                            XB[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
+                            YB[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
+                            #print "Big stuff"
+                        else:
                             tempXCenter = self.getCenterX(cnts[i])
-                            tempYCenter = self.getCenterY(cnts[i])
-                            #print(tempXCenter)
-                        XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
-                        YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
-                        #print "Small Stuff"
-                    #print  XB,XS,YB,YS
-                #print("hi7")
-                notFound = False
+                            while(tempXCenter<=0 or tempYCenter<=0):
+                                cnts =self.getContours()[0:NUM_OF_BLUE]
+                                tempXCenter = self.getCenterX(cnts[i])
+                                tempYCenter = self.getCenterY(cnts[i])
+                                #print(tempXCenter)
+                            XS[self.determineShape(cnts[i])]=self.getCenterX(cnts[i])
+                            YS[self.determineShape(cnts[i])]=self.getCenterY(cnts[i])
+                            #print "Small Stuff"
+                        #print  XB,XS,YB,YS
+                    #print("hi7")
+                    notFound = False
+                else:
+                    return 0,0,0,0
             except:
                 #print"err2"
                 continue
