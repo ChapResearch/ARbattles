@@ -132,11 +132,11 @@ class Circle2 (pygame.sprite.Sprite):
         self.image.fill(blue)
         self.tank = Tank("green")
 
-        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,((x2), y2 + 10), int(80), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,((x2), y2 + 10), int(80), 10)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
@@ -156,8 +156,12 @@ class Bullet (pygame.sprite.Sprite):
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * math.cos(rotationRobot1)) * 5
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot1)) * -5
+        self.rect.x += (bullet_sizex * math.cos(rotationRobot1)) * 2
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot1)) * -2
+
+    def setTime(self):
+        """Set the time before the last bullet fired"""
+        currentTime = datetime.datetime
 
 
 class Bullet2 (pygame.sprite.Sprite):
@@ -173,8 +177,8 @@ class Bullet2 (pygame.sprite.Sprite):
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 5
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -5
+        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 2
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -2
 
 #--Method to draw text on screen
 def message_to_screen(msg, color, xpos, ypos):
@@ -508,7 +512,7 @@ while not gameExit:
     #Check for between robot collisions
     #####
 
-    speed = 80
+    speed = 100
     stoprobot1 = False
     stoprobot2 = False
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
