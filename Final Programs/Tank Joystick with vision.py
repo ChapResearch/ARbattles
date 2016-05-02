@@ -103,17 +103,19 @@ class Circle (pygame.sprite.Sprite):
     """This class represents the Triangle tank"""
 
     def __init__(self):
+
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,10))
         self.image.fill(white)
         #self.tank = Tank("blue")
-        print "Distance 1" + str(distance1)
         pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
         self.rect = self.image.get_rect()
+        #print "Init: X1: ", x1, "Y1: ", y1
 
     def update(self):
         pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
+        #print "X1: ", x1, "Y1: ", y1
         #self.tank.move((x1,y1), math.degrees(rotationRobot1))
         #gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
 
@@ -259,7 +261,7 @@ if joystick_count > 1:
 firstTime = False
 count = 0
 while not gameExit:
-
+    #print "loop"
     # ----- Game Over -----
     while gameOver == True:
         Movement.reset()
@@ -324,7 +326,7 @@ while not gameExit:
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
-
+        #print "hello"
         if event.type == pygame.QUIT:
             gameExit = True
 
@@ -435,6 +437,7 @@ while not gameExit:
                 circle2.update()
                 pygame.time.set_timer(RESETEVENT2, 0)
 
+    #print "pre vision"
     # --- Game logic
 
     #
@@ -447,19 +450,23 @@ while not gameExit:
 
     #Test Data One
     ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
+    #print "0a"
+
     ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
+    #print "1a"
 
     if lastPosRobot1 == None or lastRotationRobot2==None or lastPosRobot2==None or lastRotationRobot1==None:
         while xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 or x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1:
             ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
             ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
-
+    #print "2a"
     baddata = False
     if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
         baddata = True
     if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
         baddata = True
 
+    #print "3a"
     if baddata:
         centerRobot1 = lastPosRobot1
         rotationRobot1 = lastRotationRobot1
@@ -501,6 +508,7 @@ while not gameExit:
     lastRotationRobot2 = rotationRobot2
 
     x1 = int(centerRobot1[0]); y1 = int(centerRobot1[1]); x2 = int(centerRobot2[0]); y2 = int(centerRobot2[1])
+    #print "5a"
 
     #Determine the distence between the two given points (Currently hardcoded)
     distance1 = 80
@@ -512,7 +520,7 @@ while not gameExit:
     #Check for between robot collisions
     #####
 
-    speed = 100
+    speed = 20
     stoprobot1 = False
     stoprobot2 = False
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
@@ -654,7 +662,7 @@ while not gameExit:
     # Call the update() method on all the sprites
     all_sprites_list.update()
     circle.update()
-
+    #print "updATE?"
     # Calculate collisions for bullets from player 1 hitting player 2
     for bullet in bullet_list:
         # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank Blue 2
