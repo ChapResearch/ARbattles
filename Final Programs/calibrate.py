@@ -53,10 +53,11 @@ class Calibrate:
         return self.originX, self.originY, self.width, self.hieght
 
     def getContours(self):
+        #print "getContours"
         (grabbed, frame) = cap.read()
-        #tempFrame = frame
+        tempFrame = frame
         #cv2.imshow("frame", frame)
-        #cv2.waitKey(0)
+        cv2.waitKey(0)
         #cv2.imshow("hi", frame)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #HSV color scale captures a wider range of the color "blue"
         #print("hi1")

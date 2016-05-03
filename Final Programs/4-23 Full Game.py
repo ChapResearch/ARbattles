@@ -103,19 +103,17 @@ class Circle (pygame.sprite.Sprite):
     """This class represents the Triangle tank"""
 
     def __init__(self):
-
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,10))
         self.image.fill(white)
         #self.tank = Tank("blue")
+        print "Distance 1" + str(distance1)
         pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
         self.rect = self.image.get_rect()
-        #print "Init: X1: ", x1, "Y1: ", y1
 
     def update(self):
         pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
-        #print "X1: ", x1, "Y1: ", y1
         #self.tank.move((x1,y1), math.degrees(rotationRobot1))
         #gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
 
@@ -134,11 +132,11 @@ class Circle2 (pygame.sprite.Sprite):
         self.image.fill(blue)
         self.tank = Tank("green")
 
-        pygame.draw.circle(gameDisplay, color2,((x2), y2 + 10), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color2,((x2), y2 + 10), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,((x2), y2), int(80), 10)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT2, time)
@@ -155,17 +153,11 @@ class Bullet (pygame.sprite.Sprite):
         self.image = pygame.Surface([bullet_sizex, bullet_sizey])
         self.image.fill(color)
         self.rect = self.image.get_rect()
-        self.rotationX = math.cos(rotationRobot1)
-        self.rotationY = math.sin(rotationRobot1)
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * self.rotationX) * 2
-        self.rect.y += (bullet_sizey * self.rotationY) * -2
-
-    def setTime(self):
-        """Set the time before the last bullet fired"""
-        currentTime = datetime.datetime
+        self.rect.x += (bullet_sizex * math.cos(rotationRobot1)) * 5
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot1)) * -5
 
 
 class Bullet2 (pygame.sprite.Sprite):
@@ -181,8 +173,8 @@ class Bullet2 (pygame.sprite.Sprite):
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 2
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -2
+        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 5
+        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -5
 
 #--Method to draw text on screen
 def message_to_screen(msg, color, xpos, ypos):
@@ -263,7 +255,7 @@ if joystick_count > 1:
 firstTime = False
 count = 0
 while not gameExit:
-    #print "loop"
+
     # ----- Game Over -----
     while gameOver == True:
         Movement.reset()
@@ -328,7 +320,7 @@ while not gameExit:
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
-        #print "hello"
+
         if event.type == pygame.QUIT:
             gameExit = True
 
@@ -408,7 +400,7 @@ while not gameExit:
                 # Set the bullet so to where the player is
                 bullet.rect.x = centerRobot1[0] + rotatedPoint1[0]
                 bullet.rect.y = centerRobot1[1] + rotatedPoint1[1]
-                #rotationBullet1 = [math.cos(rotationRobot1), math.sin(rotationRobot1)]
+
                 # Add the bullet to the lists
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
@@ -439,7 +431,6 @@ while not gameExit:
                 circle2.update()
                 pygame.time.set_timer(RESETEVENT2, 0)
 
-    #print "pre vision"
     # --- Game logic
 
     #
@@ -452,23 +443,19 @@ while not gameExit:
 
     #Test Data One
     ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
-    #print "0a"
-
     ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
-    #print "1a"
 
     if lastPosRobot1 == None or lastRotationRobot2==None or lastPosRobot2==None or lastRotationRobot1==None:
         while xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 or x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1:
             ((xS,yS),(xB,yB)) = vision.robotLocation(1) #Triangle
             ((x1S,y1S),(x1B,y1B)) = vision.robotLocation(2) #Quadrilateral
-    #print "2a"
+
     baddata = False
     if(xS<=0 or yS<=0 or xB<=0 or yB<=0 or xS>=1 or yS>=1 or xB>=1 or yB>=1 ):
         baddata = True
     if(x1S<=0 or y1S<=0 or x1B<=0 or y1B<=0 or x1S>=1 or y1S>=1 or x1B>=1 or y1B>=1):
         baddata = True
 
-    #print "3a"
     if baddata:
         centerRobot1 = lastPosRobot1
         rotationRobot1 = lastRotationRobot1
@@ -521,7 +508,7 @@ while not gameExit:
     #Check for between robot collisions
     #####
 
-    speed = 20
+    speed = 80
     stoprobot1 = False
     stoprobot2 = False
     rotatedPoint1 = [(math.cos(-1 * rotationRobot1) * distance1), (math.sin(-1 * rotationRobot1) * distance1)]
@@ -544,7 +531,7 @@ while not gameExit:
 
         futureForward1 = [centerRobot1[0] + speed * math.cos(rotationRobot1), centerRobot1[1] + speed * math.sin(rotationRobot1)]
         futureBackward1 = [centerRobot1[0] - speed * math.cos(rotationRobot1), centerRobot1[1] - speed * math.sin(rotationRobot1)]
-        pygame.draw.circle(gameDisplay, green,(futureBackward1), 15, 0)
+        #pygame.draw.circle(gameDisplay, green,(futureBackward1), 15, 0)
 
         #print "Robot 1 Boundary, backward: ", Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displaywidth, displayheight)
         #print "Robot 1 Collision, backward: ", Line_Functions.isIntersecting(futureBackward1, centerRobot2, distance1, distance2, 20)
@@ -663,7 +650,7 @@ while not gameExit:
     # Call the update() method on all the sprites
     all_sprites_list.update()
     circle.update()
-    #print "updATE?"
+
     # Calculate collisions for bullets from player 1 hitting player 2
     for bullet in bullet_list:
         # If player 2 is hit, remove the bullet, add to the player 1 score and turn the player 2 tank Blue 2
@@ -764,10 +751,10 @@ while not gameExit:
     screen_text = font.render("Square Score " + str(score2), True, blue)
     gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 460])
 
-    
+
     # Update the screen
     pygame.display.flip()
-    
+
     # --- Limit to frames per second
     clock.tick(FPS)
 
