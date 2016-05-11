@@ -61,9 +61,9 @@ def bounce1():
     if case1 == 0:
         if firstTime:
             if (direction1 == 'b'):
-                robots.setSpeed(0, -50, -50)
+                robots.setSpeed(0, -30, -30)
             elif (direction1 == 'f'):
-                robots.setSpeed(0, 50, 50)
+                robots.setSpeed(0, 30, 30)
             target1 = datetime.datetime.now() + datetime.timedelta(seconds=straightTime1)
             print "robot 1 case 0"
             firstTime = False
@@ -93,9 +93,9 @@ def bounce2():
         if firstTime2:
             print "robot 2 case 0"
             if (direction2 == 'b'):
-                robots.setSpeed(1, -50, -50)
+                robots.setSpeed(1, -30, -30)
             elif (direction2 == 'f'):
-                robots.setSpeed(1, 50, 50)
+                robots.setSpeed(1, 30, 30)
 
             target2 = datetime.datetime.now() + datetime.timedelta(seconds=straightTime2)
             firstTime2 = False

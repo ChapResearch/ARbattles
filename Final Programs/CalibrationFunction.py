@@ -3,7 +3,7 @@ import pygame
 white = (255,255,255)
 red = (206, 16, 98)
 
-runProgram = False
+showProgram = False
 displaywidth = 750
 displayheight = 500
 gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
@@ -13,7 +13,7 @@ def calibrationSquares (gameDisplay, displaywidth, displayheight):
     pygame.draw.rect(gameDisplay, red, [0, 0, displaywidth/4 + 25, displayheight/4 + 40])
     pygame.draw.rect(gameDisplay, red,[displaywidth - 140, displayheight - 140, (displaywidth/4), (displayheight/4 + 40)])
 
-if (runProgram):
+if (showProgram):
     gameExit = False
     while not gameExit:
         for event in pygame.event.get():

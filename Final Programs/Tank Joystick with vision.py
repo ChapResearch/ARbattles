@@ -10,14 +10,14 @@ import CalibrationFunction
 import ARBattlesVision as ar
 
 
-#Software Calibration
+# Software Calibration
 pygame.init()
 print "init complete"
-displaywidth = 750
-displayheight = 500
-gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
+displayWidth = 750
+displayHeight = 500
+gameDisplay = pygame.display.set_mode([displayWidth, displayHeight])
 
-CalibrationFunction.calibrationSquares(gameDisplay, displaywidth, displayheight)
+CalibrationFunction.calibrationSquares(gameDisplay, displayWidth, displayHeight)
 pygame.display.update()
 print "called squares"
 
@@ -41,7 +41,7 @@ while not calibrationExit:
                     calibrationExit = True
 
 
-#Calibration
+# Calibration
 gameDisplay.fill((255, 255, 255))
 pygame.display.update()
 print "init"
@@ -58,18 +58,18 @@ red2 = (220, 0, 0)
 RED = (255, 0, 0)
 
 BLUE = (73, 109, 173)
-blue = (73, 109, 173) #Orientation Point Triangle
+blue = (73, 109, 173)  # Orientation Point Triangle
 blue2 = (204, 255, 240)
 
 GREEN = (109, 157, 77)
-green = (109, 157, 77) #Orientation Point Square
+green = (109, 157, 77)  # Orientation Point Square
 green2 = (0, 200, 0)
 
-purple = (128,0,128)
-yellow = (255,255,0)
+purple = (128, 0, 128)
+yellow = (255, 255, 0)
 wallBlue = (0, 100, 150)
 
-#Define Font
+# Define Font
 font = pygame.font.SysFont(None, 25)
 
 #Sizing blocks and bullets
@@ -108,16 +108,16 @@ class Circle (pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,10))
         self.image.fill(white)
-        #self.tank = Tank("blue")
-        pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
+        # self.tank = Tank("blue")
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(80), 10)
         self.rect = self.image.get_rect()
-        #print "Init: X1: ", x1, "Y1: ", y1
+        # print "Init: X1: ", x1, "Y1: ", y1
 
     def update(self):
-        pygame.draw.circle(gameDisplay, color,((x1 + 20), y1), int(80), 10)
-        #print "X1: ", x1, "Y1: ", y1
-        #self.tank.move((x1,y1), math.degrees(rotationRobot1))
-        #gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
+        pygame.draw.circle(gameDisplay, color,(x1, y1), int(80), 10)
+        # print "X1: ", x1, "Y1: ", y1
+        # self.tank.move((x1,y1), math.degrees(rotationRobot1))
+        # gameDisplay.blit(self.tank.image,self.tank.pos,self.tank.pos)
 
     def timer(self):
         pygame.time.set_timer(RESETEVENT, time)
@@ -134,7 +134,7 @@ class Circle2 (pygame.sprite.Sprite):
         self.image.fill(blue)
         self.tank = Tank("green")
 
-        pygame.draw.circle(gameDisplay, color2,((x2), y2 + 10), int(80), 10)
+        pygame.draw.circle(gameDisplay, color2,((x2-5), y2 + 5), int(80), 10)
         self.rect = self.image.get_rect()
 
     def update(self):
@@ -163,9 +163,9 @@ class Bullet (pygame.sprite.Sprite):
         self.rect.x += (bullet_sizex * self.rotationX) * 2
         self.rect.y += (bullet_sizey * self.rotationY) * -2
 
-    def setTime(self):
-        """Set the time before the last bullet fired"""
-        currentTime = datetime.datetime
+    #def setTime(self):
+    #    """Set the time before the last bullet fired"""
+    #    currentTime = datetime.datetime
 
 
 class Bullet2 (pygame.sprite.Sprite):
@@ -178,11 +178,13 @@ class Bullet2 (pygame.sprite.Sprite):
         self.image = pygame.Surface([bullet_sizex, bullet_sizey])
         self.image.fill(color2)
         self.rect = self.image.get_rect()
+        self.rotationX = math.cos(rotationRobot2)
+        self.rotationY = math.sin(rotationRobot2)
 
     def update(self):
         """ Move the bullet. """
-        self.rect.x += (bullet_sizex * math.cos(rotationRobot2))* 2
-        self.rect.y += (bullet_sizey * math.sin(rotationRobot2))* -2
+        self.rect.x += (bullet_sizex * self.rotationX)* 2
+        self.rect.y += (bullet_sizey * self.rotationY)* -2
 
 #--Method to draw text on screen
 def message_to_screen(msg, color, xpos, ypos):
@@ -196,9 +198,9 @@ def closeTo(value1, value2, range):
        return False
 
 # Set the height and width of the display
-displaywidth = 750
-displayheight = 500
-gameDisplay = pygame.display.set_mode([displaywidth, displayheight])
+displayWidth = 750
+displayHeight = 500
+gameDisplay = pygame.display.set_mode([displayWidth, displayHeight])
 pygame.display.set_caption('Tank Game')
 
 # --- Sprite lists
@@ -243,8 +245,8 @@ lastRotationRobot1 = None
 lastRotationRobot2 = None
 
 flickerTolerence = 0.12
-flickrWidthTolerence = flickerTolerence * displaywidth
-flickrHeightTolerence = flickerTolerence * displayheight
+flickrWidthTolerence = flickerTolerence * displayWidth
+flickrHeightTolerence = flickerTolerence * displayHeight
 
 
 # Get count of joysticks
@@ -270,38 +272,38 @@ while not gameExit:
         bullet_list.empty()
         bullet2_list.empty()
 
-        gameDisplay.fill(black)
-        message_to_screen("Game over, press Start to play again or Q to quit", red, displaywidth/2 - 200, displayheight/2)
+        gameDisplay.fill(blue2)
+        message_to_screen("Game over, press Start to play again or Q to quit", red, displayWidth/2 - 200, displayHeight/2)
 
-        screen_text = font.render("Triangle Score " + str(score), True, blue2)
-        gameDisplay.blit(screen_text, [displaywidth - 180, displayheight - 460])
+        screen_text = font.render("Triangle Score " + str(score), True, red)
+        gameDisplay.blit(screen_text, [displayWidth - 180, displayHeight - 460])
 
-        screen_text = font.render("Square Score " + str(score2), True, blue2)
-        gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 460])
+        screen_text = font.render("Square Score " + str(score2), True, red)
+        gameDisplay.blit(screen_text, [displayWidth - 710, displayHeight - 460])
 
         if score > 9:
-            screen_text = font.render("Triangle Won!", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("Triangle Won!", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         elif score2 > 9:
-            screen_text = font.render("Square Won!", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("Rectangle Won!", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         elif score <= -10:
-            screen_text = font.render("Triangle Lost!", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("Triangle Lost!", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         elif score2 <= -10:
-            screen_text = font.render("Square Lost!", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("Rectangle  Lost!", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         elif score == score2:
-            screen_text = font.render("It's a tie!", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("It's a tie!", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         else:
-            screen_text = font.render("Game Over", True, blue2)
-            gameDisplay.blit(screen_text, [displaywidth / 2 - 50, displayheight/ 2 - 100])
+            screen_text = font.render("Game Over", True, red)
+            gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight/ 2 - 100])
 
         pygame.display.flip()
 
@@ -315,12 +317,20 @@ while not gameExit:
                     gameExit = True
                     gameOver = False
 
+                if event.key == pygame.K_j:
+                    print "Start Game Over"
+                    Movement.endGameSequence(centerRobot1, centerRobot2, rotationRobot1, rotationRobot2, distance1, 20, speed, displayWidth, displayHeight)
+                    gameExit = False
+                    score = 0
+                    score2 = 0
+                    gameOver = False
+
+
             if event.type == pygame.JOYBUTTONDOWN:
                 if event.button == 10:
                     gameExit = True
                     gameOver = False
                 if event.button == 9:
-                    gameExit = False
                     score = 0
                     score2 = 0
                     gameOver = False
@@ -328,7 +338,6 @@ while not gameExit:
 
     # ----- Event Processing  -----
     for event in pygame.event.get():
-        #print "hello"
         if event.type == pygame.QUIT:
             gameExit = True
 
@@ -338,13 +347,14 @@ while not gameExit:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
-                gameDisplay = pygame.display.set_mode([displaywidth, displayheight], pygame.NOFRAME) # Fullscreen
+                gameDisplay = pygame.display.set_mode([displayWidth, displayHeight], pygame.NOFRAME) # Fullscreen
 
             if event.key == pygame.K_s:
-                gameDisplay = pygame.display.set_mode([displaywidth, displayheight]) # Normal Window
+                gameDisplay = pygame.display.set_mode([displayWidth, displayHeight]) # Normal Window
 
             if event.key == pygame.K_d:
                 print "Stop Robots"
+                pygame.display.flip()
                 stop = True      # Stop all robot activity
 
             if event.key == pygame.K_f:
@@ -356,7 +366,7 @@ while not gameExit:
                 moving = True
                 if count > 20:
                     print "starting"
-                    Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1, rotationRobot2, distance1, 20, speed, displaywidth, displayheight)
+                    Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1, rotationRobot2, distance1, 20, speed, displayWidth, displayHeight)
                     print "doneee"
                     count+=1
                 print "The game is over"
@@ -364,13 +374,21 @@ while not gameExit:
 
             if event.key == pygame.K_h:
                 print "Game Over Sequence"
-                Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displaywidth, displayheight)
+                Movement.endGameSequence(centerRobot1,centerRobot2,rotationRobot1,rotationRobot2,distance1, 20, speed, displayWidth, displayHeight)
                 print "Fin"
+
+            if event.key == pygame.K_j:
+                print "Start Game Over"
+                Movement.endGameSequence(centerRobot1, centerRobot2, rotationRobot1, rotationRobot2, distance1, 20, speed, displayWidth, displayHeight)
+                gameExit = False
+                score = 0
+                score2 = 0
+                gameOver = False
 
         if stop == False:
             if event.type == pygame.JOYAXISMOTION:
-                left = joystick.get_axis(1)
-                right = joystick.get_axis(3)
+                left = (joystick.get_axis(1)/2)
+                right = (joystick.get_axis(3)/2)
 
                 if abs(left) < 0.020:
                     left = 0
@@ -381,8 +399,8 @@ while not gameExit:
                 Movement.doTele(0, left, right)
 
                 if joystick_count > 1:
-                    left2 = joystick2.get_axis(1)
-                    right2 = joystick2.get_axis(3)
+                    left2 = (joystick2.get_axis(1)/2)
+                    right2 = (joystick2.get_axis(3)/2)
                     if abs(left2) < 0.020:
                         left2 = 0
 
@@ -402,21 +420,25 @@ while not gameExit:
 
             if (joystick.get_button(6) or joystick.get_button(7)) and not stop:
 
-                # Fire a bullet if the user hits the Blue 'X' Button
+                # Fire a bullet if the user hits the left or right triggers
                 bullet = Bullet()
 
                 # Set the bullet so to where the player is
                 bullet.rect.x = centerRobot1[0] + rotatedPoint1[0]
                 bullet.rect.y = centerRobot1[1] + rotatedPoint1[1]
-                #rotationBullet1 = [math.cos(rotationRobot1), math.sin(rotationRobot1)]
+
                 # Add the bullet to the lists
                 all_sprites_list.add(bullet)
                 bullet_list.add(bullet)
 
+            if joystick.get_button(3) and not stop:
+                print "boost"
+
+
             if joystick_count > 1:
                 if (joystick2.get_button(6) or joystick2.get_button(7)) and not stop:
 
-                    # Fire a bullet if the user hits the Red 'B' Button
+                    # Fire a bullet if the user hits the left or right triggers
                     bullet2 = Bullet2()
 
                     # Set the bullet so it is where the player is
@@ -426,6 +448,9 @@ while not gameExit:
                     # Add the bullet to the lists
                     all_sprites_list.add(bullet2)
                     bullet2_list.add(bullet2)
+
+                if joystick2.get_button(3) and not stop:
+                    print "boost2"
 
 
         #Reset the tanks back to their original color
@@ -439,6 +464,11 @@ while not gameExit:
                 circle2.update()
                 pygame.time.set_timer(RESETEVENT2, 0)
 
+    #if err is printed, stop robots
+    if stop == True:
+        screen_text = font.render("Game Paused!", True, red)
+        gameDisplay.blit(screen_text, [displayWidth / 2 - 50, displayHeight / 2 - 100])
+        pygame.display.flip()
     #print "pre vision"
     # --- Game logic
 
@@ -477,7 +507,7 @@ while not gameExit:
 
     else:
         testData = [[(xS, yS), (xB, yB)], [(x1S, y1S), (x1B, y1B)]]
-        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displaywidth, displayheight)
+        testData = Line_Functions.convertVisionDataToScreenCoords(testData, displayWidth, displayHeight)
 
         #Split Test Data into two robots
         robot2 = testData[0]
@@ -530,11 +560,11 @@ while not gameExit:
     if (stop == False):
         Movement.doAuto()
     else:
-        print "AHHHHHH"
+        print "Robots stopped from keyboard"
         Movement.reset()
 
     collision = False
-    #Line_Functions.isHittingBoundary(centerRobot1,distance1,30,'left', displaywidth, displayheight)
+    #Line_Functions.isHittingBoundary(centerRobot1,distance1,30,'left', displayWidth, displayHeight)
     #Check for robot collision
 
     if(Line_Functions.isIntersecting(centerRobot1, centerRobot2, distance1, distance2, 20)):
@@ -544,16 +574,16 @@ while not gameExit:
 
         futureForward1 = [centerRobot1[0] + speed * math.cos(rotationRobot1), centerRobot1[1] + speed * math.sin(rotationRobot1)]
         futureBackward1 = [centerRobot1[0] - speed * math.cos(rotationRobot1), centerRobot1[1] - speed * math.sin(rotationRobot1)]
-        pygame.draw.circle(gameDisplay, green,(futureBackward1), 15, 0)
+        #pygame.draw.circle(gameDisplay, green,(futureBackward1), 15, 0)
 
-        #print "Robot 1 Boundary, backward: ", Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displaywidth, displayheight)
+        #print "Robot 1 Boundary, backward: ", Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displayWidth, displayHeight)
         #print "Robot 1 Collision, backward: ", Line_Functions.isIntersecting(futureBackward1, centerRobot2, distance1, distance2, 20)
         #print "Center 1: ", centerRobot1, " ", "Future Backward 1: ", futureBackward1, " ", "Center 2: ", centerRobot2
 
-        if not Line_Functions.isHittingAnyBoundary(futureForward1, distance1, 30, displaywidth, displayheight) and not Line_Functions.isIntersecting(futureForward1, centerRobot2, distance1, distance2, 20):
+        if not Line_Functions.isHittingAnyBoundary(futureForward1, distance1, 30, displayWidth, displayHeight) and not Line_Functions.isIntersecting(futureForward1, centerRobot2, distance1, distance2, 20):
                 print "Move Forward 1"
                 Movement.startBounce(0, 'f', 0.5)
-        elif not Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(futureBackward1, centerRobot2, distance1, distance2, 20):
+        elif not Line_Functions.isHittingAnyBoundary(futureBackward1, distance1, 30, displayWidth, displayHeight)and not Line_Functions.isIntersecting(futureBackward1, centerRobot2, distance1, distance2, 20):
                 print "Move Backward 1"
                 Movement.startBounce(0, 'b', 0.5)
         elif not stoprobot2:
@@ -565,14 +595,14 @@ while not gameExit:
 
         #pygame.draw.circle(gameDisplay, blue,(futureBackward2), 15, 0)
 
-        #print "Robot 2 Boundary, backward: ", Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displaywidth, displayheight)
+        #print "Robot 2 Boundary, backward: ", Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displayWidth, displayHeight)
         #print "Robot 2 Collision, backward: ", Line_Functions.isIntersecting(centerRobot1, futureBackward2, distance1, distance2, 20)
         #print "Center 2: ", centerRobot2, " ", "Future Backward 2: ", futureBackward2, " ", "Center 1: ", centerRobot1
 
-        if not Line_Functions.isHittingAnyBoundary(futureForward2, distance2, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(centerRobot1, futureForward2, distance1, distance2, 20):
+        if not Line_Functions.isHittingAnyBoundary(futureForward2, distance2, 30, displayWidth, displayHeight)and not Line_Functions.isIntersecting(centerRobot1, futureForward2, distance1, distance2, 20):
             print "Move Forward 2"
             Movement.startBounce(1, 'f', 0.5)
-        elif not Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displaywidth, displayheight)and not Line_Functions.isIntersecting(centerRobot1, futureBackward2, distance1, distance2, 20):
+        elif not Line_Functions.isHittingAnyBoundary(futureBackward2, distance2, 30, displayWidth, displayHeight)and not Line_Functions.isIntersecting(centerRobot1, futureBackward2, distance1, distance2, 20):
             print "Move Backward 2"
             Movement.startBounce(1, 'b', 0.5)
         elif not stoprobot1:
@@ -590,7 +620,7 @@ while not gameExit:
     if collision == False:
 
         #Left Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "left", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "left", displayWidth, displayHeight):
             print "Robot 1 Left Wall"
             if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
                 Movement.startBounce(0, 'f')
@@ -598,7 +628,7 @@ while not gameExit:
                 Movement.startBounce(0, 'b')
 
         #Right Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "right", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "right", displayWidth, displayHeight):
             print "Robot 1 Right Wall"
             if (-1 * math.pi / 2) <= rotationRobot1 <= (math.pi / 2):
                 Movement.startBounce(0, 'b')
@@ -606,7 +636,7 @@ while not gameExit:
                 Movement.startBounce(0, 'f')
 
         #Bottom Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "bottom", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "bottom", displayWidth, displayHeight):
             print "Robot 1 Bottom Wall"
             if rotationRobot1 > 0:
                 Movement.startBounce(0, 'f', 2)
@@ -614,7 +644,7 @@ while not gameExit:
                 Movement.startBounce(0, 'b', 2)
 
         #Top Boundary
-        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "top", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot1, distance1, 30, "top", displayWidth, displayHeight):
             print "Robot 1 Top Wall"
             if rotationRobot1 > 0:
                 Movement.startBounce(0, 'b', 0.5)
@@ -625,7 +655,7 @@ while not gameExit:
         ###Robot 2###
 
         #Left Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "left", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "left", displayWidth, displayHeight):
             print "Robot 2 Left Wall"
             if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
                 Movement.startBounce(1, 'f')
@@ -633,7 +663,7 @@ while not gameExit:
                 Movement.startBounce(1, 'b')
 
         #Right Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "right", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "right", displayWidth, displayHeight):
             print "Robot 2 Right Wall"
             if (-1 * math.pi / 2) <= rotationRobot2 <= (math.pi / 2):
                 Movement.startBounce(1, 'b')
@@ -641,7 +671,7 @@ while not gameExit:
                 Movement.startBounce(1, 'f')
 
         #Bottom Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "bottom", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "bottom", displayWidth, displayHeight):
             print "Robot 2 Bottom Wall"
             if rotationRobot2 > 0:
                 Movement.startBounce(1, 'f', 2)
@@ -649,7 +679,7 @@ while not gameExit:
                 Movement.startBounce(1, 'b', 2)
 
         #Top Boundary
-        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "top", displaywidth, displayheight):
+        if Line_Functions.isHittingBoundary(centerRobot2, distance2, 30, "top", displayWidth, displayHeight):
             print "Robot 2 Top Wall"
             if rotationRobot2 > 0:
                 Movement.startBounce(1, 'b', 0.5)
@@ -684,7 +714,7 @@ while not gameExit:
             # print"Score: ", score, "\n"
 
         # Remove the bullet if it flies up off the screen
-        elif bullet.rect.x > displaywidth + 10 or bullet.rect.y > displayheight + 10 or bullet.rect.x < -5 or bullet.rect.y < -5:
+        elif bullet.rect.x > displayWidth + 10 or bullet.rect.y > displayHeight + 10 or bullet.rect.x < -5 or bullet.rect.y < -5:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
@@ -719,7 +749,7 @@ while not gameExit:
                 gameOver = True
 
         # Remove the bullet if it flies up off the screen
-        elif bullet2.rect.x > displaywidth + 10 or bullet2.rect.y > displayheight + 10 or bullet2.rect.x < -5 or bullet2.rect.y < -5:
+        elif bullet2.rect.x > displayWidth + 10 or bullet2.rect.y > displayHeight + 10 or bullet2.rect.x < -5 or bullet2.rect.y < -5:
             bullet2_list.remove(bullet2)
             all_sprites_list.remove(bullet2)
 
@@ -746,11 +776,11 @@ while not gameExit:
 
     #Draw Walls, left, right, top, bottom
     wallWidth = 20
-    wallColor = wallBlue
-    pygame.draw.rect(gameDisplay, wallColor, [0, 0, wallWidth, displayheight])
-    pygame.draw.rect(gameDisplay, wallColor, [displaywidth-wallWidth, 0, wallWidth, displayheight])
-    pygame.draw.rect(gameDisplay, wallColor, [0, 0, displaywidth, wallWidth])
-    pygame.draw.rect(gameDisplay, wallColor, [0, displayheight-wallWidth, displaywidth, wallWidth])
+    wallColor = yellow
+    pygame.draw.rect(gameDisplay, wallColor, [0, 0, wallWidth, displayHeight])
+    pygame.draw.rect(gameDisplay, wallColor, [displayWidth-wallWidth, 0, wallWidth, displayHeight])
+    pygame.draw.rect(gameDisplay, wallColor, [0, 0, displayWidth, wallWidth])
+    pygame.draw.rect(gameDisplay, wallColor, [0, displayHeight-wallWidth, displayWidth, wallWidth])
 
 
     # Draw Orientation Points
@@ -759,10 +789,10 @@ while not gameExit:
 
     # Draw scores in the top corners
     screen_text = font.render("Triangle Score " + str(score), True, blue)
-    gameDisplay.blit(screen_text, [displaywidth - 180, displayheight - 460])
+    gameDisplay.blit(screen_text, [displayWidth - 180, displayHeight - 460])
 
     screen_text = font.render("Square Score " + str(score2), True, blue)
-    gameDisplay.blit(screen_text, [displaywidth - 710, displayheight - 460])
+    gameDisplay.blit(screen_text, [displayWidth - 710, displayHeight - 460])
 
     
     # Update the screen
