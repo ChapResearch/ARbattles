@@ -1,0 +1,27 @@
+To bring up a bot:
+
+PREPARE TO CONFIGURE
+- find the 3.3v programming header - IT MUST BE THE 3.3v VERSION OR YOU'LL BLOW THE BOARD!!!!!
+- attach the header to your computer via USB
+- find the right COM port by using "device manager"
+- put the robot board in PROG mode
+
+PREPARE THE RN4020
+  - attach the programming header to the RN4020 header, components facing IN
+  - use PuTTY at 115200 to talk to the COM port you are using
+  - use "D" followed by Enter/Return to test the connection - you should get something readable back
+  - Type "SR,00000000" followed by Enter/Return - sets the right mode for the RN4020
+  - Type "SB,3" followed by Enter/Return - puts the RN4020 in 38400 baud mode
+  - both of those settings are "sticky" so when you restart the RN4020 it will be in the right mode
+    so go ahead and power cycle the RN4020
+  - use PuTTY at 38400 to talk to the RN4020
+  - use "D" followed by Enter/Return (again) to test the connection - you should get same thing back as before
+
+PREPARE THE ARDUINO
+  - attach to the Pro-mini Arduino header - components facing IN
+  - call up an editor on the ARBattles.ino sketch
+  - look for "#define ME" and set it to the right robot
+  - compile and download to the Pro-mini
+
+PREPARE TO RUN
+  - put the robot board in RUN mode - and you're up and running!
